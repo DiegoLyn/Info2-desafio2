@@ -1,10 +1,10 @@
 #include<iostream>
-#include "rectangulo2.h"
+#include "usuario.h"
 using namespace std;
 
 int main (int argc, char *argv[]) {
-	Rectangulo p1(11,7);
-	p1.perimetro();
+	Usuario p1("diego","123");
+	p1.validacionCredenciales("diego","123");
 	return 0;
 }
 
