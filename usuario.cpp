@@ -10,20 +10,34 @@ Usuario::Usuario(string _usuario, string _contrasena){
 	
 }
 
-bool Usuario::validacionCredenciales(string usuario, string contrasena){
+bool Usuario::validacionCredenciales(){
 	string codigo;
 	
 	cout << "Ingresa tu codigo de usuario: ";
 	getline(cin,codigo);
 	
-	string nombreArchivo = "Desafio2/huesped/usuario/"+codigo+".txt";
+	string nombreArchivoUsuario = "Desafio2/huesped/usuario/"+codigo+".txt";
 	
-	ifstream usuarioBase(nombreArchivo);
+	ifstream usuarioBase(nombreArchivoUsuario);
 	
-	string linea;
-	getline(usuarioBase,linea);
+	string usuariodb;
+	getline(usuarioBase,usuariodb);
 	
-	cout << "esto hay en el archivo: "<< linea;
+	//Recuperando la constraseña de la base de datos
+	
+	string nombreArchivoContrasena = "Desafio2/huesped/contrasena/"+codigo+".txt";
+	
+	ifstream contrasenaBase(nombreArchivoContrasena);
+	
+	string contrasenadb;
+	getline(contrasenaBase,contrasenadb);
+	
+	if (usuariodb==usuario && contrasenadb == contrasena){
+		return true;
+	}
+	else{
+		return false;
+	}
 	
 	usuarioBase.close();
 	
