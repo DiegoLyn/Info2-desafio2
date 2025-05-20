@@ -10,6 +10,7 @@ private:
 	string contrasena;
 public:
 	Usuario(string,string);
+
 	bool validacionCredenciales();
 	void loginHuesped();
 	void loginAnfitrion();

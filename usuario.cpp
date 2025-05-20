@@ -40,5 +40,83 @@ bool Usuario::validacionCredenciales(){
 	}
 	
 	usuarioBase.close();
+	contrasenaBase.close();
+}
+
+void Usuario::loginHuesped(){
+	string desicion;
+	short veces=0;
+	
+	cout <<"Bienvenido a Udeastay - Huesped"<<endl;
+	cout <<endl;
+	cout <<"1. Reservar alojamiento"<<endl;
+	cout <<"2. Anular reserva"<<endl;
+	
+	cout << "Respuesta: ";
+	getline(cin,desicion);
+	bool control = false;
+	while(!control){
+		veces=veces+1;
+		if(veces>=2){
+			control = true;
+		}
+		if (desicion!="1"&&desicion!="2"){
+			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
+			cout << "Respuesta: ";
+			getline(cin,desicion);
+		}
+		if (desicion=="1"){
+			cout<<"Ingresando a reservar...";
+			control = true;
+		}
+		else if(desicion=="2"){
+			cout<<"Ingresando a Eliminar reserva...";
+			control = true;
+		}
+		
+	}
+	
 	
 }
+
+void Usuario::loginAnfitrion(){
+	string desicion;
+	short veces=0;
+	
+	cout <<"Bienvenido a Udeastay - Anfitrion"<<endl;
+	cout <<endl;
+	cout <<"1. Anular reserva"<<endl;
+	cout <<"2. Consultar reservaciones"<<endl;
+	cout <<"3. Actualizar historico"<<endl;
+	
+	cout << "Respuesta: ";
+	getline(cin,desicion);
+	bool control = false;
+	while(!control){
+		veces=veces+1;
+		if(veces>=2){
+			control = true;
+		}
+		if (desicion!="1"&&desicion!="2"&&desicion!="3"){
+			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
+			cout << "Respuesta: ";
+			getline(cin,desicion);
+		}
+		if (desicion=="1"){
+			cout<<"Ingresando a reservar...";
+			control = true;
+		}
+		else if(desicion=="2"){
+			cout<<"Ingresando a Eliminar reserva...";
+			control = true;
+		}
+		else if(desicion=="3"){
+			cout<<"Ingresando a actualizar historico...";
+			control = true;
+		}
+		
+	}
+	
+}
+
+
