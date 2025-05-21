@@ -1,5 +1,6 @@
 #include<iostream>
 #include "usuario.h"
+#include "huesped.h"
 using namespace std;
 
 int main (int argc, char *argv[]) {
@@ -7,6 +8,7 @@ int main (int argc, char *argv[]) {
 	
 	Usuario p1("diego","12345");
 	
+
 	string desicion;
 	short veces=0;
 	
@@ -30,6 +32,7 @@ int main (int argc, char *argv[]) {
 		}
 		if (desicion=="1"){
 			p1.loginHuesped();
+			
 			control = true;
 		}
 		else if(desicion=="2"){

@@ -14,6 +14,10 @@ public:
 	bool validacionCredenciales();
 	void loginHuesped();
 	void loginAnfitrion();
+	string formatearConPuntos(string numero);
+	void reservar();
+	void buscarReservasPorMunicipio();
+	void buscarReservasPorNoches();
 	
 };
 #endif
