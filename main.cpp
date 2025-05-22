@@ -8,6 +8,7 @@ int main (int argc, char *argv[]) {
 	
 	Usuario p1("diego","12345");
 	
+	
 
 	string desicion;
 	short veces=0;

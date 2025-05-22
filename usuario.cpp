@@ -15,6 +15,7 @@ Usuario::Usuario(string _usuario, string _contrasena){
 	
 }
 
+
 bool Usuario::validacionCredenciales(){
 	string codigo;
 	
@@ -142,6 +143,7 @@ void Usuario::reservar(){
 	cout <<"2. Municipio"<<endl;
 	cout <<"3. Cantidad de noches"<<endl;
 	cout <<"4. Precio"<<endl;
+	cout <<"5. Id"<<endl;
 	
 	cout << "Respuesta: ";
 	getline(cin,desicion);
@@ -151,7 +153,7 @@ void Usuario::reservar(){
 		if(veces>=2){
 			control = true;
 		}
-		if (desicion!="1"&&desicion!="2"&&desicion!="3"&&desicion!="4"){
+		if (desicion!="1"&&desicion!="2"&&desicion!="3"&&desicion!="4"&&desicion!="5"){
 			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
 			cout << "Respuesta: ";
 			getline(cin,desicion);
@@ -172,6 +174,11 @@ void Usuario::reservar(){
 			//precio
 			control = true;
 		}
+		else if(desicion=="5"){
+			Herramientas::buscarReservasCodigo();
+			control = true;
+		}
+		
 		
 	}
 	string rutafecha = "Desafio2/reservas/fecha/01.txt";

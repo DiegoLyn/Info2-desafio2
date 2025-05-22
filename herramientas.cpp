@@ -1,5 +1,6 @@
 #include <iostream>
 #include "herramientas.h"
+#include "usuario.h"
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -40,6 +41,37 @@ string Herramientas::convertirAFechaClave(string fechaTexto) {
 	return anio + strMes + dia; // "20250531"
 }
 
+void Herramientas::guardarReservausuario(string id,string usuario){
+	string rutafecha = "Desafio2/reservas/fecha/" + id + ".txt";
+	string rutanoches = "Desafio2/reservas/noches/" + id + ".txt";
+	string rutaprecio = "Desafio2/reservas/precio/" + id + ".txt";
+	string rutamunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
+	
+	ifstream archivoMunicipio(rutamunicipio);
+	ifstream archivoFecha(rutafecha);
+	ifstream archivoNoches(rutanoches);
+	ifstream archivoPrecio(rutaprecio);
+	
+	string lafecha, nronoches, elprecio;
+	getline(archivoFecha, lafecha);
+	getline(archivoNoches, nronoches);
+	getline(archivoPrecio, elprecio);
+	string elmunicipio;
+	getline(archivoMunicipio, elmunicipio);
+
+	
+	string rutaguardar = "Desafio2/reservas/usuariosconreservas/" + usuario + ".txt";
+	
+	ofstream reservaUsuario(rutaguardar);
+	reservaUsuario << "Codigo: " << id
+		<< " - Fecha: " << lafecha
+		<< " - Municipio: " << elmunicipio
+		<< " - Cantidad de noches: " << nronoches << " noches"
+		<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+	;
+	reservaUsuario.close();
+	
+}
 
 void Herramientas::buscarReservasPorMunicipio() {
 	string palabra;
@@ -89,12 +121,21 @@ void Herramientas::buscarReservasPorMunicipio() {
 				<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
 			
 			encontrada = true;
+			
 		}
 	}
 	
 	if (!encontrada) {
 		cout << "No se encontraron reservas en el municipio '" << palabra << "'." << endl;
 	}
+	
+	cout <<endl;
+	
+	cout <<"Ingresa el codigo a reservar: ";
+	string codigoreservarusuario;
+	getline(cin,codigoreservarusuario);
+	
+	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
 }
 
 void Herramientas::buscarReservasPorNoches(){
@@ -145,6 +186,11 @@ void Herramientas::buscarReservasPorNoches(){
 				<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
 			
 			encontrada = true;
+			cout <<endl;
+			
+			cout <<"Ingresa el codigo a reservar: ";
+			string codigoreservarusuario;
+			getline(cin,codigoreservarusuario);
 		}
 	}
 	
@@ -201,7 +247,13 @@ void Herramientas::buscarReservasDesdeFecha() {
 				<< " - Cantidad de noches: " << nronoches << " noches"
 				<< " - Precio: " << formatearConPuntos(elprecio) << endl;
 			
+			
 			encontrada = true;
+			cout <<endl;
+			
+			cout <<"Ingresa el codigo a reservar: ";
+			string codigoreservarusuario;
+			getline(cin,codigoreservarusuario);
 		}
 	}
 	
@@ -209,6 +261,53 @@ void Herramientas::buscarReservasDesdeFecha() {
 		cout << "No se encontraron reservas a partir de la fecha '" << fechaUsuario << "'." << endl;
 	}
 }
+
+void Herramientas::buscarReservasCodigo(){
+	string idUsuario;
+	cout << "Ingresa el Id: ";
+	getline(cin, idUsuario);
+	string rutaid = "Desafio2/reservas/noches/" + idUsuario + ".txt";
+	ifstream archivoNoches(rutaid);
+	
+
+	
+	if (archivoNoches.is_open()) {
+		// Si hay coincidencia, leemos también los demás archivos de esa reserva
+		string rutafecha = "Desafio2/reservas/fecha/" + idUsuario + ".txt";
+		string rutamunicipio = "Desafio2/reservas/municipio/" + idUsuario + ".txt";
+		string rutaprecio = "Desafio2/reservas/precio/" + idUsuario + ".txt";
+		
+		ifstream archivoFecha(rutafecha);
+		ifstream archivoMunicipio(rutamunicipio);
+		ifstream archivoPrecio(rutaprecio);
+		
+		string lafecha, municipio, elprecio;
+		getline(archivoFecha, lafecha);
+		getline(archivoMunicipio, municipio);
+		getline(archivoPrecio, elprecio);
+		string lasnoches;
+		getline(archivoNoches, lasnoches);
+		
+		cout << "Codigo: " << idUsuario
+			<< " - Fecha: " << lafecha
+			<< " - Municipio: " << municipio
+			<< " - Cantidad de noches: " << lasnoches << " noches"
+			<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+		
+		cout <<endl;
+		
+		cout <<"Ingresa el codigo a reservar: ";
+		string codigoreservarusuario;
+		getline(cin,codigoreservarusuario);
+	}
+	else{
+		cout <<"No se encontro archivo con ese id";
+	}
+	
+}
+
+	
+	
 
 
 string Herramientas::aMinusculas(string texto) {
