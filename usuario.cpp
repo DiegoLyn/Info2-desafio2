@@ -1,9 +1,12 @@
 #include <iostream>
 #include "usuario.h"
-#include "huesped.h"
+
+#include "herramientas.h"
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <cctype>
+#include <algorithm> 
 using namespace std;
 
 Usuario::Usuario(string _usuario, string _contrasena){
@@ -126,140 +129,6 @@ void Usuario::loginAnfitrion(){
 	
 }
 
-string Usuario::formatearConPuntos(string numero) {
-	/*
-	Esta funcion da formato al saldo al momento de mostralo al usuario
-	cuando va a consultar o retirar.
-	Agrega puntos despues de tres numeros y retorna el saldo con puntos de mil
-	*/
-	
-	string resultado = "";
-	int contador = 0;
-	
-	for (int i = numero.length() - 1; i >= 0; i--) {
-		resultado = numero[i] + resultado;
-		contador++;
-		
-		if (contador == 3 && i != 0) {
-			resultado = '.' + resultado;
-			contador = 0;
-		}
-	}
-	
-	return resultado;
-}
-
-void Usuario::buscarReservasPorMunicipio() {
-	string palabra;
-	cout << "Ingresa el municipio a buscar: ";
-	getline(cin, palabra);
-	
-	// Asegurarse de capitalizar la primera letra como en los archivos
-	if (!palabra.empty()) {
-		palabra[0] = toupper(palabra[0]);
-	}
-	
-	bool encontrada = false;
-	
-	// Asumimos que hay hasta 99 archivos, puedes ajustar el límite si lo sabes
-	for (int i = 1; i <= 99; ++i) {
-		string id = (i < 10) ? "0" + to_string(i) : to_string(i);
-		
-		string rutamunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
-		ifstream archivoMunicipio(rutamunicipio);
-		if (!archivoMunicipio.is_open()) {
-			continue;
-		}
-		
-		string elmunicipio;
-		getline(archivoMunicipio, elmunicipio);
-		archivoMunicipio.close();
-		
-		if (elmunicipio == palabra) {
-			// Si hay coincidencia, leemos también los demás archivos de esa reserva
-			string rutafecha = "Desafio2/reservas/fecha/" + id + ".txt";
-			string rutanoches = "Desafio2/reservas/noches/" + id + ".txt";
-			string rutaprecio = "Desafio2/reservas/precio/" + id + ".txt";
-			
-			ifstream archivoFecha(rutafecha);
-			ifstream archivoNoches(rutanoches);
-			ifstream archivoPrecio(rutaprecio);
-			
-			string lafecha, nronoches, elprecio;
-			getline(archivoFecha, lafecha);
-			getline(archivoNoches, nronoches);
-			getline(archivoPrecio, elprecio);
-			
-			cout << "Codigo: " << id
-				<< " - Fecha: " << lafecha
-				<< " - Municipio: " << elmunicipio
-				<< " - Cantidad de noches: " << nronoches << " noches"
-				<< " - Precio: " << formatearConPuntos(elprecio) << endl;
-			
-			encontrada = true;
-		}
-	}
-	
-	if (!encontrada) {
-		cout << "No se encontraron reservas en el municipio '" << palabra << "'." << endl;
-	}
-}
-
-void Usuario::buscarReservasPorNoches(){
-	string dias;
-	cout << "Ingresa el numero de dias a buscar: ";
-	getline(cin, dias);
-	
-	
-	
-	
-	bool encontrada = false;
-	
-	// Asumimos que hay hasta 99 archivos, puedes ajustar el límite si lo sabes
-	for (int i = 1; i <= 99; ++i) {
-		string id = (i < 10) ? "0" + to_string(i) : to_string(i);
-		
-		string rutadias = "Desafio2/reservas/noches/" + id + ".txt";
-		ifstream archivoNoches(rutadias);
-		if (!archivoNoches.is_open()) {
-			continue;
-		}
-		
-		string lasnoches;
-		getline(archivoNoches, lasnoches);
-		archivoNoches.close();
-		
-		string numeroynoches=dias+" noches";
-		
-		if (lasnoches == dias || lasnoches==numeroynoches) {
-			// Si hay coincidencia, leemos también los demás archivos de esa reserva
-			string rutafecha = "Desafio2/reservas/fecha/" + id + ".txt";
-			string rutamunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
-			string rutaprecio = "Desafio2/reservas/precio/" + id + ".txt";
-			
-			ifstream archivoFecha(rutafecha);
-			ifstream archivoMunicipio(rutamunicipio);
-			ifstream archivoPrecio(rutaprecio);
-			
-			string lafecha, municipio, elprecio;
-			getline(archivoFecha, lafecha);
-			getline(archivoMunicipio, municipio);
-			getline(archivoPrecio, elprecio);
-			
-			cout << "Codigo: " << id
-				<< " - Fecha: " << lafecha
-				<< " - Municipio: " << municipio
-				<< " - Cantidad de noches: " << dias << " noches"
-				<< " - Precio: " << formatearConPuntos(elprecio) << endl;
-			
-			encontrada = true;
-		}
-	}
-	
-	if (!encontrada) {
-		cout << "No se encontraron reservas en el municipio '" << dias << "'." << endl;
-	}
-}
 
 void Usuario::reservar(){
 	string fechausuario;
@@ -288,16 +157,15 @@ void Usuario::reservar(){
 			getline(cin,desicion);
 		}
 		if (desicion=="1"){
-			cout<<"Ingresa la fecha: ";
-			getline(cin,fechausuario);
+			Herramientas::buscarReservasDesdeFecha();
 			control = true;
 		}
 		else if(desicion=="2"){
-			buscarReservasPorMunicipio();
+			Herramientas::buscarReservasPorMunicipio();
 			control = true;
 		}
 		else if(desicion=="3"){
-			buscarReservasPorNoches();
+			Herramientas::buscarReservasPorNoches();
 			control = true;
 		}
 		else if(desicion=="4"){

@@ -1,5 +1,5 @@
-#ifndef INGRESO_H
-#define INGRESO_H
+#ifndef USUARIO_H
+#define USUARIO_H
 
 #include <iostream>
 using namespace std;
@@ -14,10 +14,8 @@ public:
 	bool validacionCredenciales();
 	void loginHuesped();
 	void loginAnfitrion();
-	string formatearConPuntos(string numero);
 	void reservar();
-	void buscarReservasPorMunicipio();
-	void buscarReservasPorNoches();
+	
 	
 };
 #endif
