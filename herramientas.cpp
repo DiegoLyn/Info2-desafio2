@@ -27,6 +27,41 @@ int Herramientas::mesANumero(string mes) {
 	return 0;
 }
 
+void Herramientas::anularReserva(){
+	string confirmar;
+	string reservaEliminar;
+	string reservamostrarantesdelete;
+	cout<<"Ingresa el codigo de la reserva: ";
+	getline(cin,reservaEliminar);
+	
+	string rutaeliminar = "Desafio2/reservas/usuariosconreservas/diego/"+ reservaEliminar+ ".txt";
+	
+	ifstream reservaencontrada(rutaeliminar);
+	getline(reservaencontrada,reservamostrarantesdelete);
+	if(reservaencontrada&&!reservamostrarantesdelete.empty()){
+		cout<<endl <<"Reserva a eliminar: "<<endl;
+		cout <<reservamostrarantesdelete<<endl;
+		cout <<"Estas seguro: (s/n): ";
+		getline(cin,confirmar);
+		if(confirmar== "s"||confirmar== "S"||confirmar== "si"||confirmar== "Si"){
+			ofstream guardarcambios(rutaeliminar);
+			guardarcambios<<"";
+			
+			cout <<endl<<"Reserva eliminada con exito";
+			
+		}
+		else{
+			cout<<"Abordando opcion...";
+			reservaencontrada.close();
+		}
+	}
+	else{
+		cout<<"Reserva "<<reservaEliminar<<" no encontrada";
+		
+	}
+
+}
+
 string Herramientas::nombreDiaSemana(int semanaday) {
 	string dias[] = {"domingo","lunes","martes","miercoles","jueves","viernes","sabado"};
 	if (semanaday < 0 || semanaday > 6) return "";
@@ -101,8 +136,16 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 	getline(archivoMunicipio, elmunicipio);
 	
 	int nronochesentero = stoi(nronoches);
+	string nombreusuarioguardar = "diego";
 	
-	string rutaguardar = "Desafio2/reservas/usuariosconreservas/" + usuario + ".txt";
+	cout <<endl<< "--- Reservacion exitosa ---"<<endl;
+	cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
+	cout <<"Nombre: "<<endl;
+	cout <<"Codigo del alojamiento: "<<id<<endl;
+	cout << "fecha inicio: "<<lafecha<<endl;
+	cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
+	
+	string rutaguardar = "Desafio2/reservas/usuariosconreservas/diego/"+ id+ ".txt";
 	
 	ofstream reservaUsuario(rutaguardar,ios::app);
 	reservaUsuario << "Codigo: " << id
@@ -110,14 +153,7 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 		<< " - Municipio: " << elmunicipio
 		<< " - Cantidad de noches: " << nronoches << " noches"
 		<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
-	;
-	reservaUsuario.close();
-	cout <<endl<< "--- Reservacion exitosa ---"<<endl;
-	cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
-	cout <<"Nombre: "<<endl;
-	cout <<"Codigo del alojamiento: "<<id<<endl;
-	cout << "fecha inicio: "<<lafecha<<endl;
-	cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
+		reservaUsuario.close();
 	
 }
 
@@ -233,25 +269,22 @@ void Herramientas::buscarReservasPorNoches(){
 				<< " - Cantidad de noches: " << dias << " noches"
 				<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
 			
-			encontrada = true;
 			cout <<endl;
 			
 			cout <<"Ingresa el codigo a reservar: ";
 			string codigoreservarusuario;
 			getline(cin,codigoreservarusuario);
+			
+			Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
+			encontrada = true;
+			
 		}
 	}
 	
 	if (!encontrada) {
 		cout << "No se encontraron reservas de '" << dias << "'." << endl;
 	}
-	cout <<endl;
 	
-	cout <<"Ingresa el codigo a reservar: ";
-	string codigoreservarusuario;
-	getline(cin,codigoreservarusuario);
-	
-	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
 }
 
 
@@ -304,11 +337,7 @@ void Herramientas::buscarReservasDesdeFecha() {
 			
 			
 			encontrada = true;
-			cout <<endl;
 			
-			cout <<"Ingresa el codigo a reservar: ";
-			string codigoreservarusuario;
-			getline(cin,codigoreservarusuario);
 		}
 	}
 	
@@ -356,11 +385,7 @@ void Herramientas::buscarReservasCodigo(){
 			<< " - Cantidad de noches: " << lasnoches << " noches"
 			<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
 		
-		cout <<endl;
 		
-		cout <<"Ingresa el codigo a reservar: ";
-		string codigoreservarusuario;
-		getline(cin,codigoreservarusuario);
 	}
 	else{
 		cout <<"No se encontro archivo con ese id";

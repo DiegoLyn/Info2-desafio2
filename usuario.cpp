@@ -78,7 +78,7 @@ void Usuario::loginHuesped(){
 			control = true;
 		}
 		else if(desicion=="2"){
-			cout<<"Ingresando a anular reserva...";
+			Herramientas::anularReserva();
 			control = true;
 		}
 		

@@ -12,13 +12,22 @@ public:
 	static void buscarReservasCodigo();
 	
 	static string calcularFechaFin(string, int );
+	
 	static string nombreDiaSemana(int );
+	
 	static string generarCodigoReserva();
+	
 	static void guardarReservausuario(string,string);
+	
 	static string aMinusculas(string);
+	
 	static string formatearConPuntos(string numero);
+	
 	static string convertirAFechaClave(string);
+	
 	static int mesANumero(string);
+	
+	static void anularReserva();
 
 };
 #endif

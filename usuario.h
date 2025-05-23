@@ -16,6 +16,5 @@ public:
 	void loginAnfitrion();
 	void reservar();
 	
-	
 };
 #endif
