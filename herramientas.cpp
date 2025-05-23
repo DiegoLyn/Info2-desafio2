@@ -1,11 +1,14 @@
 #include <iostream>
 #include "herramientas.h"
 #include "usuario.h"
+#include <random>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cctype>
 #include <algorithm> 
+#include <ctime>
+
 using namespace std;
 
 int Herramientas::mesANumero(string mes) {
@@ -22,6 +25,35 @@ int Herramientas::mesANumero(string mes) {
 	if (mes == "Noviembre") return 11;
 	if (mes == "Diciembre") return 12;
 	return 0;
+}
+
+string Herramientas::nombreDiaSemana(int semanaday) {
+	string dias[] = {"domingo","lunes","martes","miercoles","jueves","viernes","sabado"};
+	if (semanaday < 0 || semanaday > 6) return "";
+	return dias[semanaday];
+}
+
+string Herramientas::calcularFechaFin(string fechaInicio, int noches) {
+	istringstream iss(fechaInicio);
+	int dia, anio;
+	string mesTexto;
+	iss >> dia >> mesTexto >> anio;
+	
+	int mes = mesANumero(mesTexto);
+	if (mes == 0) return "Mes inválido";
+	
+	tm fecha = {};
+	fecha.tm_mday = dia + noches;
+	fecha.tm_mon = mes - 1;
+	fecha.tm_year = anio - 1900;
+	mktime(&fecha);
+	
+	string mesFinal = mesTexto;
+	for (char& c : mesFinal) c = tolower(c);
+	
+	string diaSemana = nombreDiaSemana(fecha.tm_wday);
+	
+	return diaSemana + ", " + to_string(fecha.tm_mday) + " de " + mesFinal + " del " + to_string(fecha.tm_year + 1900);
 }
 
 
@@ -41,6 +73,15 @@ string Herramientas::convertirAFechaClave(string fechaTexto) {
 	return anio + strMes + dia; // "20250531"
 }
 
+string Herramientas::generarCodigoReserva(){
+	static random_device rd;
+	static mt19937 gen(rd());
+	uniform_int_distribution<> dist(1000, 9999); // Números de 4 cifras
+	
+	int numero = dist(gen);
+	return "RSV" + to_string(numero);
+}
+
 void Herramientas::guardarReservausuario(string id,string usuario){
 	string rutafecha = "Desafio2/reservas/fecha/" + id + ".txt";
 	string rutanoches = "Desafio2/reservas/noches/" + id + ".txt";
@@ -58,11 +99,12 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 	getline(archivoPrecio, elprecio);
 	string elmunicipio;
 	getline(archivoMunicipio, elmunicipio);
-
+	
+	int nronochesentero = stoi(nronoches);
 	
 	string rutaguardar = "Desafio2/reservas/usuariosconreservas/" + usuario + ".txt";
 	
-	ofstream reservaUsuario(rutaguardar);
+	ofstream reservaUsuario(rutaguardar,ios::app);
 	reservaUsuario << "Codigo: " << id
 		<< " - Fecha: " << lafecha
 		<< " - Municipio: " << elmunicipio
@@ -70,6 +112,12 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 		<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
 	;
 	reservaUsuario.close();
+	cout <<endl<< "--- Reservacion exitosa ---"<<endl;
+	cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
+	cout <<"Nombre: "<<endl;
+	cout <<"Codigo del alojamiento: "<<id<<endl;
+	cout << "fecha inicio: "<<lafecha<<endl;
+	cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
 	
 }
 
@@ -197,6 +245,13 @@ void Herramientas::buscarReservasPorNoches(){
 	if (!encontrada) {
 		cout << "No se encontraron reservas de '" << dias << "'." << endl;
 	}
+	cout <<endl;
+	
+	cout <<"Ingresa el codigo a reservar: ";
+	string codigoreservarusuario;
+	getline(cin,codigoreservarusuario);
+	
+	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
 }
 
 
@@ -260,6 +315,13 @@ void Herramientas::buscarReservasDesdeFecha() {
 	if (!encontrada) {
 		cout << "No se encontraron reservas a partir de la fecha '" << fechaUsuario << "'." << endl;
 	}
+	cout <<endl;
+	
+	cout <<"Ingresa el codigo a reservar: ";
+	string codigoreservarusuario;
+	getline(cin,codigoreservarusuario);
+	
+	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
 }
 
 void Herramientas::buscarReservasCodigo(){
@@ -304,6 +366,13 @@ void Herramientas::buscarReservasCodigo(){
 		cout <<"No se encontro archivo con ese id";
 	}
 	
+	cout <<endl;
+	
+	cout <<"Ingresa el codigo a reservar: ";
+	string codigoreservarusuario;
+	getline(cin,codigoreservarusuario);
+	
+	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
 }
 
 	
