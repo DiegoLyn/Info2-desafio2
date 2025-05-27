@@ -11,6 +11,7 @@
 #include <algorithm> 
 #include <ctime>
 
+namespace fs = std::filesystem;
 using namespace std;
 
 int Herramientas::mesANumero(string mes) {
@@ -116,14 +117,14 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 	
 	string rutanewcarpeta= "Desafio2/reservas/usuariosconreservas/"+ usuario+"/";
 	
-	string rutaguardar = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+usuario+".txt";
+    string rutaguardar = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+id+".txt";
 	try {
-		if (create_directory(rutanewcarpeta)) {
+        if (fs::create_directory(rutanewcarpeta)) {
 			cout << "Carpeta creada exitosamente: "<< endl;
 		} else {
-			cout << "No se pudo crear la carpeta (ya existe o error): "  << endl;
+            cout << "No se pudo crear la carpeta (ya existe): "  << endl;
 		}
-	} catch (const filesystem_error& e) {
+    } catch (fs::filesystem_error& e) {
 		cerr << "Error al crear carpeta: " << e.what() << endl;
 	}
 	
