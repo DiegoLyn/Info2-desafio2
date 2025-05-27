@@ -50,86 +50,99 @@ bool Usuario::validacionCredenciales(){
 	contrasenaBase.close();
 }
 
-void Usuario::loginHuesped(){
-	string desicion;
-	short veces=0;
-	
-	cout <<endl<<"Bienvenido a Udeastay - Huesped"<<endl;
-	cout <<endl;
-	cout <<"1. Reservar alojamiento"<<endl;
-	cout <<"2. Anular reserva"<<endl;
-	
-	cout << "Respuesta: ";
-	getline(cin,desicion);
-	bool control = false;
-	while(!control){
-		veces=veces+1;
-		if(veces>=2){
-			control = true;
-		}
-		if (desicion!="1"&&desicion!="2"){
-			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
-			cout << "Respuesta: ";
-			getline(cin,desicion);
-		}
-		if (desicion=="1"){
-			cout<<"Ingresando a reservar..."<<endl;
-			reservar();
-			
-			control = true;
-		}
-		else if(desicion=="2"){
-			Huesped::anularReserva();
-			control = true;
-		}
-		
-	}
-	
-	
+void Usuario::loginHuesped() {
+    bool app = true;
+
+    while (app) {
+        cout << endl << "Bienvenido a Udeastay - Huesped" << endl << endl;
+        cout << "1. Reservar alojamiento" << endl;
+        cout << "2. Anular reserva" << endl;
+        cout << "3. Salir" << endl;
+
+        string desicion;
+        short intentos = 0;
+        bool opcionValida = false;
+
+        while (!opcionValida && intentos < 3) {
+            cout << "Respuesta: ";
+            getline(cin, desicion);
+            intentos++;
+
+            if (desicion == "1") {
+                cout << "Ingresando a reservar..." << endl;
+                reservar();
+                opcionValida = true;
+            }
+            else if (desicion == "2") {
+                Huesped::anularReserva();
+                opcionValida = true;
+            }
+            else if (desicion == "3") {
+                cout << "Saliendo..." << endl;
+                app = false;
+                opcionValida = true;
+            }
+            else {
+                cout << "Opcion invalida, te quedan " << 3 - intentos << " intentos" << endl;
+                if (intentos == 3) {
+                    cout << "Se agotaron los intentos. Regresando al menu principal." << endl;
+                }
+            }
+        }
+    }
 }
-
-
 
 void Usuario::loginAnfitrion(){
-	string desicion;
-	short veces=0;
-	
-	cout <<endl<<"Bienvenido a Udeastay - Anfitrion"<<endl;
-	cout <<endl;
-	cout <<"1. Anular reserva"<<endl;
-	cout <<"2. Consultar reservaciones"<<endl;
-	cout <<"3. Actualizar historico"<<endl;
-	
-	cout << "Respuesta: ";
-	getline(cin,desicion);
-	bool control = false;
-	while(!control){
-		veces=veces+1;
-		if(veces>=2){
-			control = true;
-		}
-		if (desicion!="1"&&desicion!="2"&&desicion!="3"){
-			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
-			cout << "Respuesta: ";
-			getline(cin,desicion);
-		}
-		if (desicion=="1"){
-			Huesped::anularReserva();
-			
-			control = true;
-		}
-		else if(desicion=="2"){
-			Anfitrion::consultarReservaciones();
-			control = true;
-		}
-		else if(desicion=="3"){
-			cout<<"Ingresando a actualizar historico...";
-			control = true;
-		}
-		
-	}
-	
+    bool app = true;
+    while(app){
+        string desicion;
+        short veces=0;
+
+        cout <<endl<<"Bienvenido a Udeastay - Anfitrion"<<endl;
+        cout <<endl;
+        cout <<"1. Anular reserva"<<endl;
+        cout <<"2. Consultar reservaciones"<<endl;
+        cout <<"3. Actualizar historico"<<endl;
+        cout <<"4. Salir"<<endl;
+
+        cout << "Respuesta: ";
+        getline(cin,desicion);
+        bool control = false;
+        while(!control){
+            veces=veces+1;
+            if(veces>=2){
+                control = true;
+            }
+
+            if (desicion=="1"){
+                Huesped::anularReserva();
+
+                control = true;
+            }
+            else if(desicion=="2"){
+                Anfitrion::consultarReservaciones();
+                control = true;
+            }
+            else if(desicion=="3"){
+                cout<<"Ingresando a actualizar historico...";
+                control = true;
+            }
+            else if(desicion=="4"){
+                cout<<"Saliendo..."<<endl;
+                app=false;
+                control = true;
+            }
+            else {
+                cout << "Opcion invalida, te quedan " << 3 - veces << " intentos" << endl;
+                if (veces == 3) {
+                    cout << "Se agotaron los intentos. Regresando al menu principal." << endl;
+                }
+            }
+        }
+
+    }
 }
+
 
 
 void Usuario::reservar(){

@@ -38,6 +38,22 @@ string Herramientas::nombreDiaSemana(int semanaday) {
 	return dias[semanaday];
 }
 
+bool Herramientas::comprobarSitieneReservas(string usuario, string id){
+    string idExistente=id+".txt";
+    string datosBd;
+    string rutaarchivo = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+id+".txt";
+    ifstream archivo(rutaarchivo);
+    getline(archivo,datosBd);
+
+    if(datosBd.empty()){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
+
 string Herramientas::calcularFechaFin(string fechaInicio, int noches) {
 	istringstream iss(fechaInicio);
 	int dia, anio;
@@ -104,41 +120,57 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 	getline(archivoPrecio, elprecio);
 	string elmunicipio;
 	getline(archivoMunicipio, elmunicipio);
-	
-	int nronochesentero = stoi(nronoches);
-	string nombreusuarioguardar = "diego";
-	
-	cout <<endl<< "--- Reservacion exitosa ---"<<endl;
-	cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
-	cout <<"Nombre: "<<usuario<<endl;
-	cout <<"Codigo del alojamiento: "<<id<<endl;
-	cout << "fecha inicio: "<<lafecha<<endl;
-	cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
-	
-	string rutanewcarpeta= "Desafio2/reservas/usuariosconreservas/"+ usuario+"/";
-	
-    string rutaguardar = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+id+".txt";
-	try {
-        if (fs::create_directory(rutanewcarpeta)) {
-			cout << "Carpeta creada exitosamente: "<< endl;
-		} else {
-            cout << "No se pudo crear la carpeta (ya existe): "  << endl;
-		}
-    } catch (fs::filesystem_error& e) {
-		cerr << "Error al crear carpeta: " << e.what() << endl;
-	}
-	
-	ofstream reservaUsuario(rutaguardar,ios::app);
-	reservaUsuario << "Codigo: " << id
-		<< " - Fecha: " << lafecha
-		<< " - Municipio: " << elmunicipio
-		<< " - Cantidad de noches: " << nronoches << " noches"
-		<< " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
-		reservaUsuario.close();
-	
+
+    int nronochesentero = 0;
+    try {
+        nronochesentero = stoi(nronoches);
+    } catch (const invalid_argument& e) {
+        cerr << "Error: No es un numero valido: " << nronoches << endl;
+        return;
+    } catch (const out_of_range& e) {
+        cerr << "Error: numero de noches fuera de rango: " << endl;
+        return;
+    }
+
+    bool verdad = Herramientas::comprobarSitieneReservas(usuario,id);
+
+    if(verdad==false){
+        cout <<endl<< "--- Reservacion exitosa ---"<<endl;
+        cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
+        cout <<"Nombre: "<<usuario<<endl;
+        cout <<"Codigo del alojamiento: "<<id<<endl;
+        cout << "fecha inicio: "<<lafecha<<endl;
+        cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
+
+        string rutanewcarpeta= "Desafio2/reservas/usuariosconreservas/"+ usuario+"/";
+
+        string rutaguardar = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+id+".txt";
+        try {
+            if (fs::create_directory(rutanewcarpeta)) {
+                cout << "Carpeta creada exitosamente: "<< endl;
+            } else {
+                cout << "No se pudo crear la carpeta (ya existe): "  << endl;
+            }
+        } catch (fs::filesystem_error& e) {
+            cerr << "Error al crear carpeta: " << e.what() << endl;
+        }
+
+        ofstream reservaUsuario(rutaguardar,ios::app);
+        reservaUsuario << "Codigo: " << id
+                       << " - Fecha: " << lafecha
+                       << " - Municipio: " << elmunicipio
+                       << " - Cantidad de noches: " << nronoches << " noches"
+                       << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+        reservaUsuario.close();
+    }else{
+        cout <<"Ya tienes esa reserva"<<endl;
+    }
+
+
 }
 
 void Herramientas::buscarReservasPorMunicipio() {
+    string id;
 	string palabra;
 	cout << "Ingresa el municipio a buscar: ";
 	getline(cin, palabra);
@@ -152,7 +184,7 @@ void Herramientas::buscarReservasPorMunicipio() {
 	
 	// Asumimos que hay hasta 99 archivos, puedes ajustar el límite si lo sabes
 	for (int i = 1; i <= 99; ++i) {
-		string id = (i < 10) ? "0" + to_string(i) : to_string(i);
+        id = (i < 10) ? "0" + to_string(i) : to_string(i);
 		
 		string rutamunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
 		ifstream archivoMunicipio(rutamunicipio);
@@ -196,11 +228,14 @@ void Herramientas::buscarReservasPorMunicipio() {
 	
 	cout <<endl;
 	
-	cout <<"Ingresa el codigo a reservar: ";
-	string codigoreservarusuario;
-	getline(cin,codigoreservarusuario);
-	
-	Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
+    cout <<"Ingresa el codigo a reservar: ";
+
+
+    string codigoreservarusuario;
+    getline(cin,codigoreservarusuario);
+
+    Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
+
 }
 
 void Herramientas::buscarReservasPorNoches(){

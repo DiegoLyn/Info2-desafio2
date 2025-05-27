@@ -26,8 +26,8 @@ public:
 	static string convertirAFechaClave(string);
 	
 	static int mesANumero(string);
-	
-	
+
+    static bool comprobarSitieneReservas(string,string);
 
 };
 #endif
