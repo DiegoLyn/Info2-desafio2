@@ -2,11 +2,13 @@
 #define ANFITRION_H
 
 #include <iostream>
+#include <string>
 using namespace std;
 class Anfitrion{
 	
 public:
 	static void consultarReservaciones();
+    static void actualizarHistorico();
 	
 };
 #endif

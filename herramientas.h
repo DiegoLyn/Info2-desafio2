@@ -6,9 +6,8 @@ using namespace std;
 
 class Herramientas{
 public:
-	static void buscarReservasPorMunicipio();
-	static void buscarReservasPorNoches();
-	static void buscarReservasDesdeFecha();
+    static void buscarReservasPorFiltros();
+
 	static void buscarReservasCodigo();
 	
 	static string calcularFechaFin(string, int );

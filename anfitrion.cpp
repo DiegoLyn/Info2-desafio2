@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <cctype>
+#include <filesystem>
 #include <algorithm> 
 #include <ctime>
 
@@ -50,4 +51,74 @@ void Anfitrion::consultarReservaciones() {
 			control = false;  // No hay más archivos, sal del bucle
 		}
 	}
+}
+
+
+
+namespace fs = std::filesystem;
+
+void Anfitrion::actualizarHistorico() {
+    string fechaCorte;
+    cout << "Ingrese la fecha de corte (YYYY-MM-DD): ";
+    cin >> fechaCorte;
+
+    // Asegúrate de crear la carpeta si no existe
+    string rutaHistorico = "Desafio2/reservas/historico/";
+    if (!fs::exists(rutaHistorico)) {
+        fs::create_directories(rutaHistorico);
+    }
+
+    int numero = 1;
+    while (true) {
+        string id = to_string(numero);
+        string rutacodigo = "Desafio2/reservas/codigos/" + id + ".txt";
+
+        ifstream archivoCodigo(rutacodigo);
+        if (!archivoCodigo.is_open()) {
+            break;  // No hay más reservaciones
+        }
+
+        string codigo;
+        getline(archivoCodigo, codigo);
+        archivoCodigo.close();
+
+        // Leer la fecha de la reserva
+        string rutaFecha = "Desafio2/reservas/fecha/" + codigo + ".txt";
+        ifstream archivoFecha(rutaFecha);
+        if (!archivoFecha.is_open()) {
+            numero++;
+            continue;
+        }
+
+        string fechaReserva;
+        getline(archivoFecha, fechaReserva);
+        archivoFecha.close();
+
+        if (fechaReserva < fechaCorte) {
+            // Mover archivos al histórico
+            string rutaOrigenes[] = {
+                "Desafio2/reservas/codigos/" + id + ".txt",
+                "Desafio2/reservas/fecha/" + codigo + ".txt",
+                "Desafio2/reservas/noches/" + codigo + ".txt",
+                "Desafio2/reservas/precio/" + codigo + ".txt",
+                "Desafio2/reservas/municipio/" + codigo + ".txt"
+            };
+            for (const string& origen : rutaOrigenes) {
+                if (fs::exists(origen)) {
+                    string destino = rutaHistorico + fs::path(origen).filename().string();
+                    fs::rename(origen, destino);
+                }
+            }
+        }
+
+        numero++;
+    }
+
+    // Mostrar el rango habilitado
+    int year, month, day;
+    sscanf(fechaCorte.c_str(), "%d-%d-%d", &year, &month, &day);
+    month += 12;
+    year += (month - 1) / 12;
+    month = (month - 1) % 12 + 1;
+    printf("Reservaciones futuras habilitadas hasta: %04d-%02d-%02d\n", year, month, day);
 }

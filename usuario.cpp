@@ -124,7 +124,7 @@ void Usuario::loginAnfitrion(){
                 control = true;
             }
             else if(desicion=="3"){
-                cout<<"Ingresando a actualizar historico...";
+                Anfitrion::actualizarHistorico();
                 control = true;
             }
             else if(desicion=="4"){
@@ -152,12 +152,11 @@ void Usuario::reservar(){
 	string desicion;
 	short veces=0;
 	
-	cout << "Buscar reservacion a partir de: "<<endl;
-	cout <<"1. Fecha"<<endl;
-	cout <<"2. Municipio"<<endl;
-	cout <<"3. Cantidad de noches"<<endl;
-	cout <<"4. Precio"<<endl;
-	cout <<"5. Id"<<endl;
+    cout <<endl<< "Buscar reservacion a partir de: "<<endl;
+    cout <<"1. Fecha, Municipio y cantidad de noches"<<endl;
+    cout <<"2. Precio"<<endl;
+    cout <<"3. Puntuacion minima del anfitrion"<<endl;
+    cout <<"4. Id"<<endl;
 	
 	cout << "Respuesta: ";
 	getline(cin,desicion);
@@ -167,29 +166,26 @@ void Usuario::reservar(){
 		if(veces>=2){
 			control = true;
 		}
-		if (desicion!="1"&&desicion!="2"&&desicion!="3"&&desicion!="4"&&desicion!="5"){
+        if (desicion!="1"&&desicion!="2"&&desicion!="3"&&desicion!="4"){
 			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
 			cout << "Respuesta: ";
 			getline(cin,desicion);
 		}
 		if (desicion=="1"){
-			Herramientas::buscarReservasDesdeFecha();
+            Herramientas::buscarReservasPorFiltros();
 			control = true;
 		}
-		else if(desicion=="2"){
-			Herramientas::buscarReservasPorMunicipio();
-			control = true;
-		}
-		else if(desicion=="3"){
-			Herramientas::buscarReservasPorNoches();
-			control = true;
-		}
-		else if(desicion=="4"){
+
+        else if(desicion=="2"){
 			//precio
 			control = true;
 		}
-		else if(desicion=="5"){
-			Herramientas::buscarReservasCodigo();
+        else if(desicion=="3"){
+            //puntuacion del anfitrion
+            control = true;
+        }
+        else if(desicion=="4"){
+            Herramientas::buscarReservasCodigo();
 			control = true;
 		}
 		
