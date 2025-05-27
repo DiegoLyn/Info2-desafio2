@@ -1,6 +1,8 @@
 #include <iostream>
 #include "herramientas.h"
 #include "usuario.h"
+#include "globales.h"
+#include <filesystem>
 #include <random>
 #include <fstream>
 #include <sstream>
@@ -27,40 +29,7 @@ int Herramientas::mesANumero(string mes) {
 	return 0;
 }
 
-void Herramientas::anularReserva(){
-	string confirmar;
-	string reservaEliminar;
-	string reservamostrarantesdelete;
-	cout<<"Ingresa el codigo de la reserva: ";
-	getline(cin,reservaEliminar);
-	
-	string rutaeliminar = "Desafio2/reservas/usuariosconreservas/diego/"+ reservaEliminar+ ".txt";
-	
-	ifstream reservaencontrada(rutaeliminar);
-	getline(reservaencontrada,reservamostrarantesdelete);
-	if(reservaencontrada&&!reservamostrarantesdelete.empty()){
-		cout<<endl <<"Reserva a eliminar: "<<endl;
-		cout <<reservamostrarantesdelete<<endl;
-		cout <<"Estas seguro: (s/n): ";
-		getline(cin,confirmar);
-		if(confirmar== "s"||confirmar== "S"||confirmar== "si"||confirmar== "Si"){
-			ofstream guardarcambios(rutaeliminar);
-			guardarcambios<<"";
-			
-			cout <<endl<<"Reserva eliminada con exito";
-			
-		}
-		else{
-			cout<<"Abordando opcion...";
-			reservaencontrada.close();
-		}
-	}
-	else{
-		cout<<"Reserva "<<reservaEliminar<<" no encontrada";
-		
-	}
 
-}
 
 string Herramientas::nombreDiaSemana(int semanaday) {
 	string dias[] = {"domingo","lunes","martes","miercoles","jueves","viernes","sabado"};
@@ -140,12 +109,23 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 	
 	cout <<endl<< "--- Reservacion exitosa ---"<<endl;
 	cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
-	cout <<"Nombre: "<<endl;
+	cout <<"Nombre: "<<usuario<<endl;
 	cout <<"Codigo del alojamiento: "<<id<<endl;
 	cout << "fecha inicio: "<<lafecha<<endl;
 	cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
 	
-	string rutaguardar = "Desafio2/reservas/usuariosconreservas/diego/"+ id+ ".txt";
+	string rutanewcarpeta= "Desafio2/reservas/usuariosconreservas/"+ usuario+"/";
+	
+	string rutaguardar = "Desafio2/reservas/usuariosconreservas/"+ usuario+ "/"+usuario+".txt";
+	try {
+		if (create_directory(rutanewcarpeta)) {
+			cout << "Carpeta creada exitosamente: "<< endl;
+		} else {
+			cout << "No se pudo crear la carpeta (ya existe o error): "  << endl;
+		}
+	} catch (const filesystem_error& e) {
+		cerr << "Error al crear carpeta: " << e.what() << endl;
+	}
 	
 	ofstream reservaUsuario(rutaguardar,ios::app);
 	reservaUsuario << "Codigo: " << id
@@ -219,7 +199,7 @@ void Herramientas::buscarReservasPorMunicipio() {
 	string codigoreservarusuario;
 	getline(cin,codigoreservarusuario);
 	
-	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
+	Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
 }
 
 void Herramientas::buscarReservasPorNoches(){
@@ -275,7 +255,7 @@ void Herramientas::buscarReservasPorNoches(){
 			string codigoreservarusuario;
 			getline(cin,codigoreservarusuario);
 			
-			Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
+			Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
 			encontrada = true;
 			
 		}
@@ -350,7 +330,7 @@ void Herramientas::buscarReservasDesdeFecha() {
 	string codigoreservarusuario;
 	getline(cin,codigoreservarusuario);
 	
-	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
+	Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
 }
 
 void Herramientas::buscarReservasCodigo(){
@@ -397,7 +377,7 @@ void Herramientas::buscarReservasCodigo(){
 	string codigoreservarusuario;
 	getline(cin,codigoreservarusuario);
 	
-	Herramientas::guardarReservausuario(codigoreservarusuario,"diego");
+	Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
 }
 
 	

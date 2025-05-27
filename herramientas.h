@@ -27,7 +27,7 @@ public:
 	
 	static int mesANumero(string);
 	
-	static void anularReserva();
+	
 
 };
 #endif

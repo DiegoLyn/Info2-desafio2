@@ -1,46 +1,47 @@
 #include<iostream>
 #include "usuario.h"
 #include "huesped.h"
+#include "globales.h"
+#include <fstream>
 using namespace std;
-
-int main (int argc, char *argv[]) {
-	
-	
-	Usuario p1("diego","12345");
-	
-	
-
-	string desicion;
-	short veces=0;
-	
+void seccionComo(){
 	cout << "--- BIENVENIDO A UDEASTAY ---"<<endl;
 	cout<<endl;
-	cout <<"1. Ingresar como huesped"<<endl;
-	cout <<"2. Ingresar como anfitrion"<<endl;
+	cout <<"Usuario: ";
+	getline(cin,usuario);
 	
-	cout << "Respuesta: ";
-	getline(cin,desicion);
-	bool control = false;
-	while(!control){
-		veces=veces+1;
-		if(veces>=2){
-			control = true;
-		}
-		if (desicion!="1"&&desicion!="2"){
-			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
-			cout << "Respuesta: ";
-			getline(cin,desicion);
-		}
-		if (desicion=="1"){
+	cout <<endl<<"Contrasena: ";
+	getline(cin,contrasena);
+	Usuario p1(usuario,contrasena);
+	
+	string rutacredenciales = "Desafio2/anfitrion/usuario/" + usuario + ".txt";
+	ifstream archivo(rutacredenciales);
+	string resultado;
+	getline(archivo,resultado);
+	if(resultado==usuario){
+		p1.loginAnfitrion();
+	}
+	else{
+		string rutacredenciales = "Desafio2/huesped/usuario/" + usuario + ".txt";
+		ifstream archivo2(rutacredenciales);
+		string resultado2;
+		getline(archivo2,resultado2);
+		if(resultado2==usuario){
 			p1.loginHuesped();
-			
-			control = true;
+		}else{
+			cout <<"Usuario o contrseña incorrectas";
 		}
-		else if(desicion=="2"){
-			p1.loginAnfitrion();
-			control = true;
-		}
-	}	
+	}
+	
+	
+}
+int main (int argc, char *argv[]) {
+	
+
+	
+	
+	seccionComo();
+	
 }
 
 //	bool ella = p1.validacionCredenciales();

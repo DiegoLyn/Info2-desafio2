@@ -1,6 +1,7 @@
 #include <iostream>
 #include "usuario.h"
-
+#include "anfitrion.h"
+#include "huesped.h"
 #include "herramientas.h"
 #include <fstream>
 #include <sstream>
@@ -53,7 +54,7 @@ void Usuario::loginHuesped(){
 	string desicion;
 	short veces=0;
 	
-	cout <<"Bienvenido a Udeastay - Huesped"<<endl;
+	cout <<endl<<"Bienvenido a Udeastay - Huesped"<<endl;
 	cout <<endl;
 	cout <<"1. Reservar alojamiento"<<endl;
 	cout <<"2. Anular reserva"<<endl;
@@ -78,7 +79,7 @@ void Usuario::loginHuesped(){
 			control = true;
 		}
 		else if(desicion=="2"){
-			Herramientas::anularReserva();
+			Huesped::anularReserva();
 			control = true;
 		}
 		
@@ -93,7 +94,7 @@ void Usuario::loginAnfitrion(){
 	string desicion;
 	short veces=0;
 	
-	cout <<"Bienvenido a Udeastay - Anfitrion"<<endl;
+	cout <<endl<<"Bienvenido a Udeastay - Anfitrion"<<endl;
 	cout <<endl;
 	cout <<"1. Anular reserva"<<endl;
 	cout <<"2. Consultar reservaciones"<<endl;
@@ -113,12 +114,12 @@ void Usuario::loginAnfitrion(){
 			getline(cin,desicion);
 		}
 		if (desicion=="1"){
-			cout<<"Ingresando a anular reservar...";
+			Huesped::anularReserva();
 			
 			control = true;
 		}
 		else if(desicion=="2"){
-			cout<<"Ingresando a consultar reserva..."<<endl;
+			Anfitrion::consultarReservaciones();
 			control = true;
 		}
 		else if(desicion=="3"){
