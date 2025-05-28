@@ -195,6 +195,7 @@ void Usuario::reservar(){
 
         else if(desicion=="2"){
             //precio
+            Herramientas::buscarPorPrecioNoche();
             control = true;
         }
         else if(desicion=="3"){
