@@ -30,5 +30,8 @@ public:
 
     static void puntuacionMinimaAnfitrion(float);
 
+    static void buscarPorPrecioNoche();
+
+
 };
 #endif

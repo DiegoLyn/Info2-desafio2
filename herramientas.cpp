@@ -313,7 +313,105 @@ void Herramientas::buscarReservasCodigo(){
 
 }
 
-	
+void Herramientas::buscarPorPrecioNoche(){
+    string precioStr;
+    cout << "Ingresa el precio maximo de una noche: ";
+    getline(cin, precioStr);
+
+    string precioLimpioUsuario = "";
+    for(char c : precioStr) {
+        if (isdigit(c)) {
+            precioLimpioUsuario += c;
+        }
+    }
+
+    int precioMaximo;
+    try {
+        precioMaximo = stoi(precioLimpioUsuario);  // Convertimos a int
+    } catch (invalid_argument& e) {
+        cout << "Error: El precio ingresado no es válido." << endl;
+        return;
+    }
+
+    int numero = 1;
+    bool control = true;
+    int intentosFallidos = 0;  // Contador de intentos fallidos
+
+    while (control) {
+        string id = to_string(numero);
+        string rutacodigo = "Desafio2/reservas/anfitrionesReservas/admin/codigos/" + id + ".txt";
+        ifstream losids(rutacodigo);
+        string ide;
+        if (getline(losids, ide)) {  // Si el archivo existe y contiene algo
+            intentosFallidos = 0;  // Reinicia los fallos porque se encontró uno válido
+
+            string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + ide + ".txt";
+            string rutanoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + ide + ".txt";
+            string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + ide + ".txt";
+            string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + ide + ".txt";
+
+            ifstream archivoFecha(rutafecha);
+            ifstream archivoNoches(rutanoches);
+            ifstream archivoPrecio(rutaprecio);
+            ifstream archivoMunicipio(rutamunicipio);
+
+            string lafecha, nronoches, elprecioStr, elmunicipio;
+            getline(archivoFecha, lafecha);
+            getline(archivoNoches, nronoches);
+            getline(archivoPrecio, elprecioStr);
+            getline(archivoMunicipio, elmunicipio);
+
+            // Si el precio tiene puntos, eliminarlos antes de convertir a int
+            string precioLimpio = "";
+            for(char c : elprecioStr) {
+                if (isdigit(c)) {
+                    precioLimpio += c;
+                }
+            }
+
+            int precioActual;
+            try {
+                precioActual = stoi(precioLimpio);
+            } catch (invalid_argument& e) {
+                cout << "Error al convertir el precio en el archivo " << rutaprecio << endl;
+                numero++;
+                continue;
+            }
+
+            if(precioActual <= precioMaximo){
+                cout << endl << "--- Reserva " << id << " ---" << " Anfitrion: admin - Puntuacion: " << endl;
+                cout << "Codigo: " << ide
+                     << " - Fecha: " << lafecha
+                     << " - Municipio: " << elmunicipio
+                     << " - Cantidad de noches: " << nronoches << " noches"
+                     << " - Precio: " << Herramientas::formatearConPuntos(precioLimpio) << endl;
+
+
+            }
+
+            numero++;
+
+
+        } else {
+            intentosFallidos++;
+            if (intentosFallidos >= 10) {
+                control = false;  // Si lleva 10 intentos fallidos seguidos, salir del bucle
+            } else {
+                numero++;  // Seguir probando el siguiente número
+            }
+        }
+
+    }
+
+    cout << endl;
+    cout << "Ingresa el codigo a reservar: ";
+    string codigoreservarusuario;
+    getline(cin, codigoreservarusuario);  // No necesitas cin.ignore() aquí porque getline anterior ya consumió el '\n'
+
+    Herramientas::guardarReservausuario(codigoreservarusuario, usuario);
+
+
+}
 
 
 string Herramientas::aMinusculas(string texto) {
@@ -354,7 +452,7 @@ void Herramientas::puntuacionMinimaAnfitrion(float puntuacionHuesped){
     getline(archivopuntuacionAnfitrion,puntosAnfitrion);
 
     float puntosFloat = stof(puntosAnfitrion);
-    cout << "Puntuacion anfitrion: " << puntosFloat << " vs puntuacion huesped: " << puntuacionHuesped << endl;
+
 
     if(puntosFloat>=puntuacionHuesped){
         int numero = 1;
@@ -404,14 +502,14 @@ void Herramientas::puntuacionMinimaAnfitrion(float puntuacionHuesped){
                 }
             }
         }
+        //cin.ignore();
 
         cout <<endl;
 
         cout <<"Ingresa el codigo a reservar: ";
         string codigoreservarusuario;
-        cin.ignore();
-        getline(cin,codigoreservarusuario);
 
+        getline(cin,codigoreservarusuario);
         Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
 
     }else{

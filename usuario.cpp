@@ -7,47 +7,48 @@
 #include <sstream>
 #include <string>
 #include <cctype>
-#include <algorithm> 
+#include <algorithm>
 using namespace std;
 
 Usuario::Usuario(string _usuario, string _contrasena){
-	usuario = _usuario;
-	contrasena=_contrasena;
-	
+    usuario = _usuario;
+    contrasena=_contrasena;
+
 }
 
 
+
 bool Usuario::validacionCredenciales(){
-	string codigo;
-	
-	cout << "Ingresa tu codigo de usuario: ";
-	getline(cin,codigo);
-	
-	string nombreArchivoUsuario = "Desafio2/huesped/usuario/"+codigo+".txt";
-	
-	ifstream usuarioBase(nombreArchivoUsuario);
-	
-	string usuariodb;
-	getline(usuarioBase,usuariodb);
-	
-	//Recuperando la constraseña de la base de datos
-	
-	string nombreArchivoContrasena = "Desafio2/huesped/contrasena/"+codigo+".txt";
-	
-	ifstream contrasenaBase(nombreArchivoContrasena);
-	
-	string contrasenadb;
-	getline(contrasenaBase,contrasenadb);
-	
-	if (usuariodb==usuario && contrasenadb == contrasena){
-		return true;
-	}
-	else{
-		return false;
-	}
-	
-	usuarioBase.close();
-	contrasenaBase.close();
+    string codigo;
+
+    cout << "Ingresa tu codigo de usuario: ";
+    getline(cin,codigo);
+
+    string nombreArchivoUsuario = "Desafio2/huesped/usuario/"+codigo+".txt";
+
+    ifstream usuarioBase(nombreArchivoUsuario);
+
+    string usuariodb;
+    getline(usuarioBase,usuariodb);
+
+    //Recuperando la constrase?a de la base de datos
+
+    string nombreArchivoContrasena = "Desafio2/huesped/contrasena/"+codigo+".txt";
+
+    ifstream contrasenaBase(nombreArchivoContrasena);
+
+    string contrasenadb;
+    getline(contrasenaBase,contrasenadb);
+
+    if (usuariodb==usuario && contrasenadb == contrasena){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+    usuarioBase.close();
+    contrasenaBase.close();
 }
 
 void Usuario::loginHuesped() {
@@ -144,85 +145,119 @@ void Usuario::loginAnfitrion(){
 }
 
 
+bool esNumeroDecimalValido(const string& str) {
+    bool hayPunto = false;
+
+    if (str.empty()) return false;
+
+    for (size_t i = 0; i < str.length(); i++) {
+        if (str[i] == '.') {
+            if (hayPunto) return false;  // Más de un punto no es válido
+            hayPunto = true;
+        } else if (!isdigit(str[i])) {
+            return false;  // Si no es dígito ni punto, no es válido
+        }
+    }
+
+    return true;
+}
 
 void Usuario::reservar(){
-	string fechausuario;
-	string municipiousuario;
-	string preciousuario;
-	string desicion;
-	short veces=0;
-	
+    string fechausuario;
+    string municipiousuario;
+    string preciousuario;
+    string desicion;
+    short veces=0;
+
     cout <<endl<< "Buscar reservacion a partir de: "<<endl;
     cout <<"1. Fecha, Municipio y cantidad de noches"<<endl;
     cout <<"2. Precio"<<endl;
     cout <<"3. Puntuacion minima del anfitrion"<<endl;
     cout <<"4. Id"<<endl;
-	
-	cout << "Respuesta: ";
-	getline(cin,desicion);
-	bool control = false;
-	while(!control){
-		veces=veces+1;
-		if(veces>=2){
-			control = true;
-		}
+
+    cout << "Respuesta: ";
+    getline(cin,desicion);
+    bool control = false;
+    while(!control){
+        veces=veces+1;
+        if(veces>=2){
+            control = true;
+        }
         if (desicion!="1"&&desicion!="2"&&desicion!="3"&&desicion!="4"){
-			cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
-			cout << "Respuesta: ";
-			getline(cin,desicion);
-		}
-		if (desicion=="1"){
+            cout <<"Opcion invalida, te quedan "<<3-veces<<" intentos"<<endl;
+            cout << "Respuesta: ";
+            getline(cin,desicion);
+        }
+        if (desicion=="1"){
             Herramientas::buscarReservasPorFiltros();
-			control = true;
-		}
+            control = true;
+        }
 
         else if(desicion=="2"){
-			//precio
-			control = true;
-		}
+            //precio
+            control = true;
+        }
         else if(desicion=="3"){
             //puntuacion del anfitrion
+            string puntuacionStr;
             float puntuacion;
-            cout <<"Ingresa la puntuacion (Ej:4.5): ";
-            cin>>puntuacion;
+            bool valido = false;
+
+            while (!valido) {
+                cout << "Ingresa la puntuacion (Ej:4.5): ";
+                getline(cin, puntuacionStr);
+
+                if (!esNumeroDecimalValido(puntuacionStr)) {
+                    cout << "Entrada no valida. Ingresa solo numeros (con punto si es decimal)." << endl;
+                    continue;
+                }
+
+                try {
+                    puntuacion = stof(puntuacionStr);
+                    valido = true;
+                } catch (invalid_argument& e) {
+                    cout << "Error: La conversion a numero fallo." << endl;
+                }
+            }
+
 
             Herramientas::puntuacionMinimaAnfitrion(puntuacion);
             control = true;
         }
         else if(desicion=="4"){
             Herramientas::buscarReservasCodigo();
-			control = true;
-		}
-		
-		
-	}
-	string rutafecha = "Desafio2/reservas/fecha/01.txt";
-	ifstream fecha(rutafecha);
-	string lafecha;
-	getline(fecha,lafecha);
-	
-	string rutamunicipio = "Desafio2/reservas/municipio/01.txt";
-	ifstream municipio(rutamunicipio);
-	string elmunicipio;
-	getline(municipio,elmunicipio);
-	
-	
-	string rutanoches = "Desafio2/reservas/noches/01.txt";
-	ifstream noche(rutanoches);
-	string nronoches;
-	getline(noche,nronoches);
-	
-	string rutaprecio = "Desafio2/reservas/precio/01.txt";
-	ifstream precio(rutaprecio);
-	string elprecio;
-	getline(precio,elprecio);
-	
-	
-	
+            control = true;
+        }
+
+
+    }
+    string rutafecha = "Desafio2/reservas/fecha/01.txt";
+    ifstream fecha(rutafecha);
+    string lafecha;
+    getline(fecha,lafecha);
+
+    string rutamunicipio = "Desafio2/reservas/municipio/01.txt";
+    ifstream municipio(rutamunicipio);
+    string elmunicipio;
+    getline(municipio,elmunicipio);
+
+
+    string rutanoches = "Desafio2/reservas/noches/01.txt";
+    ifstream noche(rutanoches);
+    string nronoches;
+    getline(noche,nronoches);
+
+    string rutaprecio = "Desafio2/reservas/precio/01.txt";
+    ifstream precio(rutaprecio);
+    string elprecio;
+    getline(precio,elprecio);
+
+
+
 //	cout <<endl;
 //	cout << "Reservaciones disponibles: "<<endl;
 //	cout <<endl;
-	
+
 }
 
 
