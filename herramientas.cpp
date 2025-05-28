@@ -151,8 +151,6 @@ void Herramientas::guardarReservausuario(string id,string usuario){
         try {
             if (fs::create_directory(rutanewcarpeta)) {
                 cout << "Carpeta creada exitosamente: "<< endl;
-            } else {
-                cout << "No se pudo crear la carpeta (ya existe): "  << endl;
             }
         } catch (fs::filesystem_error& e) {
             cerr << "Error al crear carpeta: " << e.what() << endl;
@@ -373,13 +371,16 @@ void Herramientas::buscarPorPrecioNoche(){
             try {
                 precioActual = stoi(precioLimpio);
             } catch (invalid_argument& e) {
-                cout << "Error al convertir el precio en el archivo " << rutaprecio << endl;
+
                 numero++;
                 continue;
             }
-
+            string puntuacionA;
+            string rutaPuntuacion = "Desafio2/anfitrion/usuario/adminPuntuacion.txt";
+            ifstream  pA (rutaPuntuacion);
+            getline(pA,puntuacionA);
             if(precioActual <= precioMaximo){
-                cout << endl << "--- Reserva " << id << " ---" << " Anfitrion: admin - Puntuacion: " << endl;
+                cout << endl << "--- Reserva " << id << " ---" << " Anfitrion: admin - Puntuacion: "<<puntuacionA << endl;
                 cout << "Codigo: " << ide
                      << " - Fecha: " << lafecha
                      << " - Municipio: " << elmunicipio

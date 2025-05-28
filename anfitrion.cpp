@@ -2,37 +2,40 @@
 #include "anfitrion.h"
 #include "herramientas.h"
 #include <fstream>
-#include <sstream>
+
 #include <string>
 #include <cctype>
-#include <filesystem>
-#include <algorithm> 
+
 #include <ctime>
 
+
 using namespace std;
+
+
 
 void Anfitrion::consultarReservaciones() {
     int numero = 1;
     bool control = true;
-    int intentosFallidos = 0;  // Contador de intentos fallidos
+    int intentosFallidos = 0;
+    bool algunaReservaImpresion = false;
 
     string admin;
-    cout<<"Ingresa nombre administrador: ";
-    getline(cin,admin);
+    cout << "Ingresa nombre administrador: ";
+    getline(cin, admin);
 
     while (control) {
         string identificador = to_string(numero);
-        string rutacodigos = "Desafio2/reservas/anfitrionesReservas/"+admin+"/codigos/" + identificador + ".txt";
+        string rutacodigos = "Desafio2/reservas/anfitrionesReservas/" + admin + "/codigos/" + identificador + ".txt";
 
         ifstream codigos(rutacodigos);
         string id;
-        if (getline(codigos, id)) {  // Si el archivo existe y contiene algo
-            intentosFallidos = 0;  // Reinicia los fallos porque se encontró uno válido
+        if (getline(codigos, id)) {
+            intentosFallidos = 0;
 
-            string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
-            string rutanoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
-            string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
-            string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
+            string rutafecha = "Desafio2/reservas/anfitrionesReservas/" + admin + "/fecha/" + id + ".txt";
+            string rutanoches = "Desafio2/reservas/anfitrionesReservas/" + admin + "/noches/" + id + ".txt";
+            string rutaprecio = "Desafio2/reservas/anfitrionesReservas/" + admin + "/precio/" + id + ".txt";
+            string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/" + admin + "/municipio/" + id + ".txt";
 
             ifstream archivoFecha(rutafecha);
             ifstream archivoNoches(rutanoches);
@@ -40,99 +43,130 @@ void Anfitrion::consultarReservaciones() {
             ifstream archivoMunicipio(rutamunicipio);
 
             string lafecha, nronoches, elprecio, elmunicipio;
-            getline(archivoFecha, lafecha);
-            getline(archivoNoches, nronoches);
-            getline(archivoPrecio, elprecio);
-            getline(archivoMunicipio, elmunicipio);
 
-            cout << endl << "--- Reserva " << id << " ---" << endl;
-            cout << "Codigo: " << id
-                 << " - Fecha: " << lafecha
-                 << " - Municipio: " << elmunicipio
-                 << " - Cantidad de noches: " << nronoches << " noches"
-                 << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+            if (getline(archivoFecha, lafecha)) {
+                getline(archivoNoches, nronoches);
+                getline(archivoPrecio, elprecio);
+                getline(archivoMunicipio, elmunicipio);
 
-            numero++;  // Avanza al siguiente código
+                cout << endl << "--- Reserva " << id << " ---" << endl;
+                cout << "Codigo: " << id
+                     << " - Fecha: " << lafecha
+                     << " - Municipio: " << elmunicipio
+                     << " - Cantidad de noches: " << nronoches << " noches"
+                     << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+                algunaReservaImpresion = true;
+            }
+
+            numero++;  // Avanza siempre para evitar quedar atascado
+
         } else {
             intentosFallidos++;
             if (intentosFallidos >= 10) {
-                control = false;  // Si lleva 10 intentos fallidos seguidos, salir del bucle
+
+                control = false;
             } else {
-                numero++;  // Seguir probando el siguiente número
+                numero++;
             }
         }
     }
+    if (algunaReservaImpresion==false) {
+        cout << "No tienes reservas asociadas." << endl;
+    }
+
 }
 
 
-
-
-namespace fs = std::filesystem;
-
 void Anfitrion::actualizarHistorico() {
-    string fechaCorte;
-    cout << "Ingrese la fecha de corte (YYYY-MM-DD): ";
-    cin >> fechaCorte;
+    string dia, mes, anio;
+    cout << "Ingresa la fecha de corte (dia=6 mes=6 anio=2025)" << endl;
+    cout << "Dia: "; getline(cin, dia);
+    cout << "Mes: "; getline(cin, mes);
+    cout << "Año: "; getline(cin, anio);
 
-    // Asegúrate de crear la carpeta si no existe
-    string rutaHistorico = "Desafio2/reservas/historico/";
-    if (!fs::exists(rutaHistorico)) {
-        fs::create_directories(rutaHistorico);
-    }
+    string admin;
+    cout<<"Ingresa nombre administrador: ";
+    getline(cin,admin);
+
+    string fechaCorte = dia  + mes + anio;
 
     int numero = 1;
-    while (true) {
-        string id = to_string(numero);
-        string rutacodigo = "Desafio2/reservas/codigos/" + id + ".txt";
+    int intentosFallidos = 0;
+    bool control = true;
 
-        ifstream archivoCodigo(rutacodigo);
-        if (!archivoCodigo.is_open()) {
-            break;  // No hay más reservaciones
-        }
-
-        string codigo;
-        getline(archivoCodigo, codigo);
-        archivoCodigo.close();
-
-        // Leer la fecha de la reserva
-        string rutaFecha = "Desafio2/reservas/fecha/" + codigo + ".txt";
-        ifstream archivoFecha(rutaFecha);
-        if (!archivoFecha.is_open()) {
-            numero++;
-            continue;
-        }
-
-        string fechaReserva;
-        getline(archivoFecha, fechaReserva);
-        archivoFecha.close();
-
-        if (fechaReserva < fechaCorte) {
-            // Mover archivos al histórico
-            string rutaOrigenes[] = {
-                "Desafio2/reservas/codigos/" + id + ".txt",
-                "Desafio2/reservas/fecha/" + codigo + ".txt",
-                "Desafio2/reservas/noches/" + codigo + ".txt",
-                "Desafio2/reservas/precio/" + codigo + ".txt",
-                "Desafio2/reservas/municipio/" + codigo + ".txt"
-            };
-            for (const string& origen : rutaOrigenes) {
-                if (fs::exists(origen)) {
-                    string destino = rutaHistorico + fs::path(origen).filename().string();
-                    fs::rename(origen, destino);
-                }
-            }
-        }
-
-        numero++;
+    string rutaHistorico = "Desafio2/historico/historico.txt";
+    ofstream guardarH(rutaHistorico, ios::app);
+    if (!guardarH) {
+        cout << "Error al abrir el archivo historico." << endl;
+        return;
     }
 
-    // Mostrar el rango habilitado
-    int year, month, day;
-    sscanf(fechaCorte.c_str(), "%d-%d-%d", &year, &month, &day);
-    month += 12;
-    year += (month - 1) / 12;
-    month = (month - 1) % 12 + 1;
-    printf("Reservaciones futuras habilitadas hasta: %04d-%02d-%02d\n", year, month, day);
+    while (control) {
+        string id = (numero < 10) ? "0" + to_string(numero) : to_string(numero);
+        string rutafecha = "Desafio2/reservas/anfitrionesReservas/"+admin+"/fecha/" + id + ".txt";
+        string rutacodigo = "Desafio2/reservas/anfitrionesReservas/"+admin+"/codigos/" + id + ".txt";
+        string rutanoches = "Desafio2/reservas/anfitrionesReservas/"+admin+"/noches/" + id + ".txt";
+        string rutaprecio = "Desafio2/reservas/anfitrionesReservas/"+admin+"/precio/" + id + ".txt";
+        string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/"+admin+"/municipio/" + id + ".txt";
+
+        ifstream archivoFecha(rutafecha);
+
+
+        string lafecha;
+        if (getline(archivoFecha, lafecha)) {
+            intentosFallidos = 0; // Reiniciar intentos
+
+
+            string ide, nronoches, elprecio, elmunicipio;
+            ifstream archivoCod(rutacodigo);
+            ifstream archivoNoches(rutanoches);
+            ifstream archivoPrecio(rutaprecio);
+            ifstream archivoMunicipio(rutamunicipio) ;
+
+            string rutafechaconpa = "Desafio2/reservas/anfitrionesReservas/"+admin+"/fechaComparar/" + id + ".txt";
+            ifstream archivoComparar(rutamunicipio) ;
+            string fechaComparar;
+            getline(archivoComparar,fechaComparar);
+
+            if (lafecha < fechaComparar) {
+
+
+                getline(archivoCod, ide);
+                getline(archivoNoches, nronoches);
+                getline(archivoPrecio, elprecio);
+                getline(archivoMunicipio, elmunicipio);
+
+                // Escribir en historico
+                guardarH << "Codigo: " << id
+                         << " - Fecha: " << lafecha
+                         << " - Municipio: " << elmunicipio
+                         << " - Noches: " << nronoches
+                         << " - Precio: " << Herramientas::formatearConPuntos(elprecio)
+                         << endl;
+                ofstream archivoCodigoG(rutacodigo);
+                ofstream archivoNochesG(rutanoches);
+                ofstream archivoPrecioG(rutaprecio);
+                ofstream archivoMunicipioG(rutamunicipio) ;
+                ofstream archivoFechaG(rutafecha);
+
+                archivoMunicipioG<<"";
+                archivoCodigoG<<"";
+                archivoNochesG<<"";
+                archivoPrecioG<<"";
+                archivoNochesG<<"";
+
+
+            }
+            numero++; // Muy importante: avanzar al siguiente número
+        } else {
+            intentosFallidos++;
+            if (intentosFallidos >= 10) control = false; // Terminar si no hay más archivos
+            else numero++;
+        }
+    }
+
+    guardarH.close();
+    cout << "Actualizacion de historico completada." << endl;
 }
 
 
@@ -184,6 +218,5 @@ void Anfitrion::anularReservaAnfitrion(){
 
         }
     }
-
 
 }
