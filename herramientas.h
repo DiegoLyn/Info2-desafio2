@@ -28,5 +28,7 @@ public:
 
     static bool comprobarSitieneReservas(string,string);
 
+    static void puntuacionMinimaAnfitrion(float);
+
 };
 #endif

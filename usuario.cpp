@@ -182,6 +182,11 @@ void Usuario::reservar(){
 		}
         else if(desicion=="3"){
             //puntuacion del anfitrion
+            float puntuacion;
+            cout <<"Ingresa la puntuacion (Ej:4.5): ";
+            cin>>puntuacion;
+
+            Herramientas::puntuacionMinimaAnfitrion(puntuacion);
             control = true;
         }
         else if(desicion=="4"){

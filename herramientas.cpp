@@ -345,3 +345,79 @@ string Herramientas::formatearConPuntos(string numero) {
 	return resultado;
 }
 
+void Herramientas::puntuacionMinimaAnfitrion(float puntuacionHuesped){
+    string puntosAnfitrion;
+
+    string rutaPuntosAnfitrion = "Desafio2/anfitrion/usuario/adminPuntuacion.txt";
+
+    ifstream archivopuntuacionAnfitrion(rutaPuntosAnfitrion);
+    getline(archivopuntuacionAnfitrion,puntosAnfitrion);
+
+    float puntosFloat = stof(puntosAnfitrion);
+    cout << "Puntuacion anfitrion: " << puntosFloat << " vs puntuacion huesped: " << puntuacionHuesped << endl;
+
+    if(puntosFloat>=puntuacionHuesped){
+        int numero = 1;
+        bool control = true;
+        int intentosFallidos = 0;  // Contador de intentos fallidos
+
+
+        while (control) {
+            string identificador = to_string(numero);
+            string rutacodigos = "Desafio2/reservas/anfitrionesReservas/admin/codigos/" + identificador + ".txt";
+
+            ifstream codigos(rutacodigos);
+            string id;
+            if (getline(codigos, id)) {  // Si el archivo existe y contiene algo
+                intentosFallidos = 0;  // Reinicia los fallos porque se encontró uno válido
+
+                string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
+                string rutanoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
+                string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
+                string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
+
+                ifstream archivoFecha(rutafecha);
+                ifstream archivoNoches(rutanoches);
+                ifstream archivoPrecio(rutaprecio);
+                ifstream archivoMunicipio(rutamunicipio);
+
+                string lafecha, nronoches, elprecio, elmunicipio;
+                getline(archivoFecha, lafecha);
+                getline(archivoNoches, nronoches);
+                getline(archivoPrecio, elprecio);
+                getline(archivoMunicipio, elmunicipio);
+
+                cout << endl << "--- Reserva " << id << " ---" << "Anfitrion: admin - Puntuacion: "<<puntosFloat<< endl;
+                cout << "Codigo: " << id
+                     << " - Fecha: " << lafecha
+                     << " - Municipio: " << elmunicipio
+                     << " - Cantidad de noches: " << nronoches << " noches"
+                     << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+
+                numero++;  // Avanza al siguiente código
+            } else {
+                intentosFallidos++;
+                if (intentosFallidos >= 10) {
+                    control = false;  // Si lleva 10 intentos fallidos seguidos, salir del bucle
+                } else {
+                    numero++;  // Seguir probando el siguiente número
+                }
+            }
+        }
+
+        cout <<endl;
+
+        cout <<"Ingresa el codigo a reservar: ";
+        string codigoreservarusuario;
+        cin.ignore();
+        getline(cin,codigoreservarusuario);
+
+        Herramientas::guardarReservausuario(codigoreservarusuario,usuario);
+
+    }else{
+        cout << "El anfitrion no cumple con la puntuacion minima requerida (" << puntuacionHuesped << ")." << endl;
+    }
+
+}
+
+
