@@ -7,6 +7,6 @@ using namespace std;
 
 class Huesped{
 public:
-	static void anularReserva();
+    static void anularReservaHuesped();
 };
 #endif

@@ -74,7 +74,7 @@ void Usuario::loginHuesped() {
                 opcionValida = true;
             }
             else if (desicion == "2") {
-                Huesped::anularReserva();
+                Huesped::anularReservaHuesped();
                 opcionValida = true;
             }
             else if (desicion == "3") {
@@ -115,7 +115,7 @@ void Usuario::loginAnfitrion(){
             }
 
             if (desicion=="1"){
-                Huesped::anularReserva();
+                Anfitrion::anularReservaAnfitrion();
 
                 control = true;
             }

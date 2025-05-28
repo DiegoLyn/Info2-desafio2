@@ -104,10 +104,12 @@ string Herramientas::generarCodigoReserva(){
 }
 
 void Herramientas::guardarReservausuario(string id,string usuario){
-	string rutafecha = "Desafio2/reservas/fecha/" + id + ".txt";
-	string rutanoches = "Desafio2/reservas/noches/" + id + ".txt";
-	string rutaprecio = "Desafio2/reservas/precio/" + id + ".txt";
-	string rutamunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
+
+    //estas rutas son para mostrar en el recibo, van a buscar la reserva asociada con ese admmin
+    string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
+    string rutanoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
+    string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
+    string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
 	
 	ifstream archivoMunicipio(rutamunicipio);
 	ifstream archivoFecha(rutafecha);
@@ -131,6 +133,7 @@ void Herramientas::guardarReservausuario(string id,string usuario){
         cerr << "Error: numero de noches fuera de rango: " << endl;
         return;
     }
+
 
     bool verdad = Herramientas::comprobarSitieneReservas(usuario,id);
 
@@ -157,7 +160,7 @@ void Herramientas::guardarReservausuario(string id,string usuario){
 
         ofstream reservaUsuario(rutaguardar,ios::app);
         reservaUsuario << "Codigo: " << id
-                       << " - Fecha: " << lafecha
+                       << " - Fecha: " << lafecha // aca se estan usando las rutas  de arriba
                        << " - Municipio: " << elmunicipio
                        << " - Cantidad de noches: " << nronoches << " noches"
                        << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
@@ -197,7 +200,7 @@ void Herramientas::buscarReservasPorFiltros() {
         string id = (i < 10) ? "0" + to_string(i) : to_string(i);
 
         // Leer fecha
-        string rutaFecha = "Desafio2/reservas/fecha/" + id + ".txt";
+        string rutaFecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
         ifstream archivoFecha(rutaFecha);
         if (!archivoFecha.is_open()) continue;
         string fechaArchivo;
@@ -210,7 +213,7 @@ void Herramientas::buscarReservasPorFiltros() {
         }
 
         // Leer municipio
-        string rutaMunicipio = "Desafio2/reservas/municipio/" + id + ".txt";
+        string rutaMunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
         ifstream archivoMunicipio(rutaMunicipio);
         if (!archivoMunicipio.is_open()) continue;
         string municipioArchivo;
@@ -221,7 +224,7 @@ void Herramientas::buscarReservasPorFiltros() {
         }
 
         // Leer noches
-        string rutaNoches = "Desafio2/reservas/noches/" + id + ".txt";
+        string rutaNoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
         ifstream archivoNoches(rutaNoches);
         if (!archivoNoches.is_open()) continue;
         string nochesArchivo;
@@ -234,7 +237,7 @@ void Herramientas::buscarReservasPorFiltros() {
         }
 
         // Leer precio
-        string rutaPrecio = "Desafio2/reservas/precio/" + id + ".txt";
+        string rutaPrecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
         ifstream archivoPrecio(rutaPrecio);
         if (!archivoPrecio.is_open()) continue;
         string precioArchivo;
@@ -267,16 +270,16 @@ void Herramientas::buscarReservasCodigo(){
     string idUsuario;
     cout << "Ingresa el Id: ";
     getline(cin, idUsuario);
-    string rutaid = "Desafio2/reservas/noches/" + idUsuario + ".txt";
+    string rutaid = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + idUsuario + ".txt";
     ifstream archivoNoches(rutaid);
 
 
 
     if (archivoNoches.is_open()) {
         // Si hay coincidencia, leemos también los demás archivos de esa reserva
-        string rutafecha = "Desafio2/reservas/fecha/" + idUsuario + ".txt";
-        string rutamunicipio = "Desafio2/reservas/municipio/" + idUsuario + ".txt";
-        string rutaprecio = "Desafio2/reservas/precio/" + idUsuario + ".txt";
+        string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + idUsuario + ".txt";
+        string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + idUsuario + ".txt";
+        string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + idUsuario + ".txt";
 
         ifstream archivoFecha(rutafecha);
         ifstream archivoMunicipio(rutamunicipio);

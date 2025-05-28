@@ -9,6 +9,7 @@ class Anfitrion{
 public:
 	static void consultarReservaciones();
     static void actualizarHistorico();
+    static void anularReservaAnfitrion();
 	
 };
 #endif
