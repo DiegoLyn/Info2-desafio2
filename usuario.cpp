@@ -1,6 +1,7 @@
 #include <iostream>
 #include "usuario.h"
 #include "anfitrion.h"
+#include "estadisticas.h"
 #include "huesped.h"
 #include "herramientas.h"
 #include <fstream>
@@ -179,6 +180,7 @@ void Usuario::reservar(){
     getline(cin,desicion);
     bool control = false;
     while(!control){
+
         veces=veces+1;
         if(veces>=2){
             control = true;
@@ -205,6 +207,7 @@ void Usuario::reservar(){
             bool valido = false;
 
             while (!valido) {
+
                 cout << "Ingresa la puntuacion (Ej:4.5): ";
                 getline(cin, puntuacionStr);
 

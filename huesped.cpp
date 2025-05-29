@@ -1,5 +1,6 @@
 #include <iostream>
 #include "huesped.h"
+#include "estadisticas.h"
 #include <fstream>
 #include <string>
 using namespace std;

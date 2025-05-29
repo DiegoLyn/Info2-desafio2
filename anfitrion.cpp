@@ -2,7 +2,7 @@
 #include "anfitrion.h"
 #include "herramientas.h"
 #include <fstream>
-
+#include "estadisticas.h"
 #include <string>
 #include <cctype>
 
@@ -24,6 +24,7 @@ void Anfitrion::consultarReservaciones() {
     getline(cin, admin);
 
     while (control) {
+
         string identificador = to_string(numero);
         string rutacodigos = "Desafio2/reservas/anfitrionesReservas/" + admin + "/codigos/" + identificador + ".txt";
 
@@ -102,6 +103,7 @@ void Anfitrion::actualizarHistorico() {
     }
 
     while (control) {
+
         string id = (numero < 10) ? "0" + to_string(numero) : to_string(numero);
         string rutafecha = "Desafio2/reservas/anfitrionesReservas/"+admin+"/fecha/" + id + ".txt";
         string rutacodigo = "Desafio2/reservas/anfitrionesReservas/"+admin+"/codigos/" + id + ".txt";
@@ -124,7 +126,7 @@ void Anfitrion::actualizarHistorico() {
             ifstream archivoMunicipio(rutamunicipio) ;
 
             string rutafechaconpa = "Desafio2/reservas/anfitrionesReservas/"+admin+"/fechaComparar/" + id + ".txt";
-            ifstream archivoComparar(rutamunicipio) ;
+            ifstream archivoComparar(rutafechaconpa) ;
             string fechaComparar;
             getline(archivoComparar,fechaComparar);
 

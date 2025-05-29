@@ -1,6 +1,7 @@
 #include <iostream>
 #include "herramientas.h"
 #include "usuario.h"
+#include "estadisticas.h"
 #include "globales.h"
 #include <filesystem>
 #include <random>
@@ -138,12 +139,54 @@ void Herramientas::guardarReservausuario(string id,string usuario){
     bool verdad = Herramientas::comprobarSitieneReservas(usuario,id);
 
     if(verdad==false){
-        cout <<endl<< "--- Reservacion exitosa ---"<<endl;
-        cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
-        cout <<"Nombre: "<<usuario<<endl;
-        cout <<"Codigo del alojamiento: "<<id<<endl;
-        cout << "fecha inicio: "<<lafecha<<endl;
-        cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
+        string doc;
+        cout <<"Ingresa tu documento: ";
+        getline(cin,doc);
+
+        string metodoPago;
+        cout <<"Ingresa el metodo de pago (1.PSE 2.TCredito): ";
+        getline(cin,metodoPago);
+        if(metodoPago=="1"){
+            metodoPago="PSE";
+        }
+        else if(metodoPago=="2"){
+            metodoPago="TCredito";
+        }
+        else{
+            metodoPago="No aplica";
+        }
+
+        string monto;
+        cout <<"Ingresa el monto: ";
+        getline(cin,monto);
+
+        string anotacion;
+        cout <<"Anadir anotacion (1000 caracteres): ";
+        getline(cin,anotacion);
+
+
+        if (anotacion.length() > 1000) {
+            cout << "Error: El texto excede el límite de 1000 caracteres." << endl;
+        } else {
+            string rutaGAnotacion = "Desafio2/reservas/anfitrionesReservas/admin/anotacionesUsers/"+id+".txt";
+            ofstream archivoAn(rutaGAnotacion);
+            archivoAn<<anotacion;
+            archivoAn.close();
+
+            cout <<endl<< "--- Reservacion exitosa ---"<<endl;
+            cout << "Codigo de la reserva: "<< Herramientas::generarCodigoReserva()<<endl;
+            cout <<"Nombre: "<<usuario<<endl;
+            cout <<"Documento: "<<doc<<endl;
+            cout <<"Metodo de pago: "<<metodoPago<<endl;
+            cout <<"Monto: "<<monto<<endl;
+            cout <<"Fecha de Pago: "<<lafecha<<endl;
+            cout <<"Codigo del alojamiento: "<<id<<endl;
+            cout << "fecha inicio: "<<lafecha<<endl;
+            cout << "fecha fin: "<<Herramientas::calcularFechaFin(lafecha,nronochesentero)<<endl;
+
+
+        }
+
 
         string rutanewcarpeta= "Desafio2/reservas/usuariosconreservas/"+ usuario+"/";
 
@@ -241,12 +284,50 @@ void Herramientas::buscarReservasPorFiltros() {
         string precioArchivo;
         getline(archivoPrecio, precioArchivo);
         archivoPrecio.close();
+        //nombre
+        string rutaNombre = "Desafio2/reservas/anfitrionesReservas/admin/nombre/" + id + ".txt";
+        ifstream archivoNombre(rutaNombre);
+        if (!archivoNombre.is_open()) continue;
+        string nombreArchivo;
+        getline(archivoNombre, nombreArchivo);
+        archivoNombre.close();
+
+        //Departamento
+
+        string rutadepar = "Desafio2/reservas/anfitrionesReservas/admin/departamento/" + id + ".txt";
+        ifstream archivoDepar(rutadepar);
+        if (!archivoDepar.is_open()) continue;
+        string deparArchivo;
+        getline(archivoDepar, deparArchivo);
+        archivoDepar.close();
+
+        //direccion
+
+        string rutadirec = "Desafio2/reservas/anfitrionesReservas/admin/direccion/" + id + ".txt";
+        ifstream archivoDirec(rutadirec);
+        if (!archivoDirec.is_open()) continue;
+        string direcArchivo;
+        getline(archivoDirec, direcArchivo);
+        archivoDirec.close();
+
+        //amenidades
+
+        string rutaAmeni = "Desafio2/reservas/anfitrionesReservas/admin/amenidades/" + id + ".txt";
+        ifstream archivoAmeni(rutaAmeni);
+        if (!archivoAmeni.is_open()) continue;
+        string ameniArchivo;
+        getline(archivoAmeni, ameniArchivo);
+        archivoAmeni.close();
 
         // Mostrar reserva que cumple criterios
-        cout << "Codigo: " << id
+        cout <<endl<< "Nombre: " << nombreArchivo
+             << " - Codigo: " << id
              << " - Fecha: " << fechaArchivo
+             << " - Departamento: " << deparArchivo
              << " - Municipio: " << municipioArchivo
+             << endl<<" - Direccion: " << direcArchivo
              << " - Cantidad de noches: " << nochesArchivo
+             << " - Amenidades: " << ameniArchivo
              << " - Precio: " << Herramientas::formatearConPuntos(precioArchivo) << endl;
 
         encontrada = true;
@@ -290,11 +371,48 @@ void Herramientas::buscarReservasCodigo(){
         string lasnoches;
         getline(archivoNoches, lasnoches);
 
-        cout << "Codigo: " << idUsuario
+        //nombre
+        string rutaNombre = "Desafio2/reservas/anfitrionesReservas/admin/nombre/" + idUsuario + ".txt";
+        ifstream archivoNombre(rutaNombre);
+        string nombreArchivo;
+        getline(archivoNombre, nombreArchivo);
+        archivoNombre.close();
+
+        //Departamento
+
+        string rutadepar = "Desafio2/reservas/anfitrionesReservas/admin/departamento/" + idUsuario + ".txt";
+        ifstream archivoDepar(rutadepar);
+        string deparArchivo;
+        getline(archivoDepar, deparArchivo);
+        archivoDepar.close();
+
+        //direccion
+
+        string rutadirec = "Desafio2/reservas/anfitrionesReservas/admin/direccion/" + idUsuario + ".txt";
+        ifstream archivoDirec(rutadirec);
+        string direcArchivo;
+        getline(archivoDirec, direcArchivo);
+        archivoDirec.close();
+
+        //amenidades
+
+        string rutaAmeni = "Desafio2/reservas/anfitrionesReservas/admin/amenidades/" + idUsuario + ".txt";
+        ifstream archivoAmeni(rutaAmeni);
+        string ameniArchivo;
+        getline(archivoAmeni, ameniArchivo);
+        archivoAmeni.close();
+
+        // Mostrar reserva que cumple criterios
+        cout <<endl<< "Nombre: " << nombreArchivo
+             << " - Codigo: " << idUsuario
              << " - Fecha: " << lafecha
+             << " - Departamento: " << deparArchivo
              << " - Municipio: " << municipio
-             << " - Cantidad de noches: " << lasnoches << " noches"
-             << " - Precio: " <<Herramientas::formatearConPuntos(elprecio) << endl;
+             <<endl<< " - Direccion: " << direcArchivo
+             << " - Cantidad de noches: " << lasnoches
+             << " - Amenidades: " << ameniArchivo
+             << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+
 
         cout <<endl;
 
@@ -336,6 +454,7 @@ void Herramientas::buscarPorPrecioNoche(){
     int intentosFallidos = 0;  // Contador de intentos fallidos
 
     while (control) {
+
         string id = to_string(numero);
         string rutacodigo = "Desafio2/reservas/anfitrionesReservas/admin/codigos/" + id + ".txt";
         ifstream losids(rutacodigo);
@@ -362,6 +481,7 @@ void Herramientas::buscarPorPrecioNoche(){
             // Si el precio tiene puntos, eliminarlos antes de convertir a int
             string precioLimpio = "";
             for(char c : elprecioStr) {
+
                 if (isdigit(c)) {
                     precioLimpio += c;
                 }
@@ -380,12 +500,47 @@ void Herramientas::buscarPorPrecioNoche(){
             ifstream  pA (rutaPuntuacion);
             getline(pA,puntuacionA);
             if(precioActual <= precioMaximo){
-                cout << endl << "--- Reserva " << id << " ---" << " Anfitrion: admin - Puntuacion: "<<puntuacionA << endl;
-                cout << "Codigo: " << ide
+                //nombre
+                string rutaNombre = "Desafio2/reservas/anfitrionesReservas/admin/nombre/" + ide + ".txt";
+                ifstream archivoNombre(rutaNombre);
+                string nombreArchivo;
+                getline(archivoNombre, nombreArchivo);
+                archivoNombre.close();
+
+                //Departamento
+
+                string rutadepar = "Desafio2/reservas/anfitrionesReservas/admin/departamento/" + ide + ".txt";
+                ifstream archivoDepar(rutadepar);
+                string deparArchivo;
+                getline(archivoDepar, deparArchivo);
+                archivoDepar.close();
+
+                //direccion
+
+                string rutadirec = "Desafio2/reservas/anfitrionesReservas/admin/direccion/" + ide + ".txt";
+                ifstream archivoDirec(rutadirec);
+                string direcArchivo;
+                getline(archivoDirec, direcArchivo);
+                archivoDirec.close();
+
+                //amenidades
+
+                string rutaAmeni = "Desafio2/reservas/anfitrionesReservas/admin/amenidades/" + ide + ".txt";
+                ifstream archivoAmeni(rutaAmeni);
+                string ameniArchivo;
+                getline(archivoAmeni, ameniArchivo);
+                archivoAmeni.close();
+
+                // Mostrar reserva que cumple criterios
+                cout <<endl<< "Nombre: " << nombreArchivo
+                     << " - Codigo: " << ide
                      << " - Fecha: " << lafecha
+                     << " - Departamento: " << deparArchivo
                      << " - Municipio: " << elmunicipio
-                     << " - Cantidad de noches: " << nronoches << " noches"
-                     << " - Precio: " << Herramientas::formatearConPuntos(precioLimpio) << endl;
+                     <<endl<< " - Direccion: " << direcArchivo
+                     << " - Cantidad de noches: " << nronoches
+                     << " - Amenidades: " << ameniArchivo
+                     << " - Precio: " << Herramientas::formatearConPuntos(elprecioStr) << endl;
 
 
             }
@@ -462,6 +617,7 @@ void Herramientas::puntuacionMinimaAnfitrion(float puntuacionHuesped){
 
 
         while (control) {
+
             string identificador = to_string(numero);
             string rutacodigos = "Desafio2/reservas/anfitrionesReservas/admin/codigos/" + identificador + ".txt";
 
@@ -470,29 +626,85 @@ void Herramientas::puntuacionMinimaAnfitrion(float puntuacionHuesped){
             if (getline(codigos, id)) {  // Si el archivo existe y contiene algo
                 intentosFallidos = 0;  // Reinicia los fallos porque se encontró uno válido
 
-                string rutafecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
-                string rutanoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
-                string rutaprecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
-                string rutamunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
+                string rutaFecha = "Desafio2/reservas/anfitrionesReservas/admin/fecha/" + id + ".txt";
+                ifstream archivoFecha(rutaFecha);
+                if (!archivoFecha.is_open()) continue;
+                string fechaArchivo;
+                getline(archivoFecha, fechaArchivo);
+                archivoFecha.close();
 
-                ifstream archivoFecha(rutafecha);
-                ifstream archivoNoches(rutanoches);
-                ifstream archivoPrecio(rutaprecio);
-                ifstream archivoMunicipio(rutamunicipio);
 
-                string lafecha, nronoches, elprecio, elmunicipio;
-                getline(archivoFecha, lafecha);
-                getline(archivoNoches, nronoches);
-                getline(archivoPrecio, elprecio);
-                getline(archivoMunicipio, elmunicipio);
 
-                cout << endl << "--- Reserva " << id << " ---" << "Anfitrion: admin - Puntuacion: "<<puntosFloat<< endl;
-                cout << "Codigo: " << id
-                     << " - Fecha: " << lafecha
-                     << " - Municipio: " << elmunicipio
-                     << " - Cantidad de noches: " << nronoches << " noches"
-                     << " - Precio: " << Herramientas::formatearConPuntos(elprecio) << endl;
+                // Leer municipio
+                string rutaMunicipio = "Desafio2/reservas/anfitrionesReservas/admin/municipio/" + id + ".txt";
+                ifstream archivoMunicipio(rutaMunicipio);
+                if (!archivoMunicipio.is_open()) continue;
+                string municipioArchivo;
+                getline(archivoMunicipio, municipioArchivo);
+                archivoMunicipio.close();
 
+
+                // Leer noches
+                string rutaNoches = "Desafio2/reservas/anfitrionesReservas/admin/noches/" + id + ".txt";
+                ifstream archivoNoches(rutaNoches);
+                if (!archivoNoches.is_open()) continue;
+                string nochesArchivo;
+                getline(archivoNoches, nochesArchivo);
+                archivoNoches.close();
+
+
+                // Leer precio
+                string rutaPrecio = "Desafio2/reservas/anfitrionesReservas/admin/precio/" + id + ".txt";
+                ifstream archivoPrecio(rutaPrecio);
+                if (!archivoPrecio.is_open()) continue;
+                string precioArchivo;
+                getline(archivoPrecio, precioArchivo);
+                archivoPrecio.close();
+                //nombre
+                string rutaNombre = "Desafio2/reservas/anfitrionesReservas/admin/nombre/" + id + ".txt";
+                ifstream archivoNombre(rutaNombre);
+                if (!archivoNombre.is_open()) continue;
+                string nombreArchivo;
+                getline(archivoNombre, nombreArchivo);
+                archivoNombre.close();
+
+                //Departamento
+
+                string rutadepar = "Desafio2/reservas/anfitrionesReservas/admin/departamento/" + id + ".txt";
+                ifstream archivoDepar(rutadepar);
+                if (!archivoDepar.is_open()) continue;
+                string deparArchivo;
+                getline(archivoDepar, deparArchivo);
+                archivoDepar.close();
+
+                //direccion
+
+                string rutadirec = "Desafio2/reservas/anfitrionesReservas/admin/direccion/" + id + ".txt";
+                ifstream archivoDirec(rutadirec);
+                if (!archivoDirec.is_open()) continue;
+                string direcArchivo;
+                getline(archivoDirec, direcArchivo);
+                archivoDirec.close();
+
+                //amenidades
+
+                string rutaAmeni = "Desafio2/reservas/anfitrionesReservas/admin/amenidades/" + id + ".txt";
+                ifstream archivoAmeni(rutaAmeni);
+                if (!archivoAmeni.is_open()) continue;
+                string ameniArchivo;
+                getline(archivoAmeni, ameniArchivo);
+                archivoAmeni.close();
+
+                // Mostrar reserva que cumple criterios
+                cout <<endl<< "Nombre: " << nombreArchivo
+                     << " - Codigo: " << id
+                     << " - Fecha: " << fechaArchivo
+                     << " - Departamento: " << deparArchivo
+                     << " - Municipio: " << municipioArchivo
+                     <<endl<< " - Direccion: " << direcArchivo
+                     << " - Cantidad de noches: " << nochesArchivo
+                     << " - Amenidades: " << ameniArchivo
+                     << " - Precio: " << Herramientas::formatearConPuntos(precioArchivo) << endl;
                 numero++;  // Avanza al siguiente código
             } else {
                 intentosFallidos++;
